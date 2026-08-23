@@ -22,6 +22,31 @@ type Project = {
   demoUrl: string;
 };
 
+type Question = {
+  id: string;
+  author: string;
+  initials: string;
+  role: string;
+  time: string;
+  text: string;
+  answer?: {
+    author: string;
+    initials: string;
+    text: string;
+  };
+};
+
+type Review = {
+  id: string;
+  projectId: string;
+  project: string;
+  author: string;
+  initials: string;
+  role: string;
+  rating: number;
+  text: string;
+};
+
 const initialProjects: Project[] = [
   {
     id: '01',
@@ -81,6 +106,113 @@ const initialProjects: Project[] = [
   },
 ];
 
+const initialQuestions: Record<string, Question[]> = {
+  '01': [
+    {
+      id: 'q-01-01',
+      author: 'Nodira K.',
+      initials: 'NK',
+      role: 'student',
+      time: '2 days ago',
+      text: 'How do you keep the practice prompts from feeling repetitive?',
+      answer: {
+        author: 'Akari Karimova',
+        initials: 'AK',
+        text: 'Each scenario rotates by level and mood, so the learner practises the same skill in a new context.',
+      },
+    },
+    {
+      id: 'q-01-02',
+      author: 'Kenji Mori',
+      initials: 'KM',
+      role: 'mentor',
+      time: 'yesterday',
+      text: 'Which part of the flow helped you feel more confident speaking?',
+    },
+  ],
+  '02': [
+    {
+      id: 'q-02-01',
+      author: 'Dilnoza A.',
+      initials: 'DA',
+      role: 'visitor',
+      time: '4 hours ago',
+      text: 'Can I filter the restaurants by a vegetarian menu and a quiet atmosphere?',
+      answer: {
+        author: 'Muhammad Rakhimov',
+        initials: 'MR',
+        text: 'Yes — open Filters and combine “Vegetarian” with “Calm”. More community tags are coming next.',
+      },
+    },
+    {
+      id: 'q-02-02',
+      author: 'Saidbek T.',
+      initials: 'ST',
+      role: 'local guide',
+      time: 'last week',
+      text: 'How do you check whether a review is still accurate?',
+    },
+  ],
+  '03': [
+    {
+      id: 'q-03-01',
+      author: 'Mina S.',
+      initials: 'MS',
+      role: 'reviewer',
+      time: '3 days ago',
+      text: 'Will students be able to submit a case study without writing code?',
+      answer: {
+        author: 'Sardor Yusupov',
+        initials: 'SY',
+        text: 'Yes. The archive accepts a story, a visual, and a demo link, so the format stays open to different kinds of work.',
+      },
+    },
+  ],
+  '04': [
+    {
+      id: 'q-04-01',
+      author: 'Aziza R.',
+      initials: 'AR',
+      role: 'editor',
+      time: 'last week',
+      text: 'What is the first place you would like to visit from this list?',
+    },
+  ],
+};
+
+const feedback: Review[] = [
+  {
+    id: 'r-01',
+    projectId: '01',
+    project: 'Nihongo Talk Trainer',
+    author: 'Mai Sato',
+    initials: 'MS',
+    role: 'language mentor',
+    rating: 5,
+    text: 'The project makes speaking practice feel approachable. I understood the flow in less than a minute.',
+  },
+  {
+    id: 'r-02',
+    projectId: '02',
+    project: 'Osh Table',
+    author: 'Aziza R.',
+    initials: 'AR',
+    role: 'early visitor',
+    rating: 5,
+    text: 'I found two new places for the weekend and liked that every recommendation has a real local voice behind it.',
+  },
+  {
+    id: 'r-03',
+    projectId: '03',
+    project: 'JDU Open Archive',
+    author: 'Timur K.',
+    initials: 'TK',
+    role: 'portfolio reviewer',
+    rating: 4,
+    text: 'Clear enough to present in three minutes, but deep enough to keep exploring. The project story is strong.',
+  },
+];
+
 const ui: Record<Language, Record<string, string>> = {
   EN: {
     workspace: 'JDU portfolio workspace',
@@ -130,6 +262,11 @@ const ui: Record<Language, Record<string, string>> = {
     ask: 'Ask a question',
     post: 'Post',
     reviewReady: '3 of 4 essentials ready',
+    feedback: 'Community feedback',
+    feedbackBody: 'A small pulse from people who opened the projects and left a note.',
+    averageScore: 'average score',
+    openFeedback: 'Open discussion',
+    reply: 'creator reply',
   },
   RU: {
     workspace: 'рабочее пространство JDU',
@@ -179,6 +316,11 @@ const ui: Record<Language, Record<string, string>> = {
     ask: 'Задать вопрос',
     post: 'Опубликовать',
     reviewReady: '3 из 4 пунктов готово',
+    feedback: 'Отзывы сообщества',
+    feedbackBody: 'Небольшая подборка отзывов людей, которые открыли проекты и оставили заметку.',
+    averageScore: 'средняя оценка',
+    openFeedback: 'Открыть обсуждение',
+    reply: 'ответ автора',
   },
   UZ: {
     workspace: 'JDU portfolio ish maydoni',
@@ -228,6 +370,11 @@ const ui: Record<Language, Record<string, string>> = {
     ask: 'Savol berish',
     post: 'Joylash',
     reviewReady: '4 dan 3 tasi tayyor',
+    feedback: 'Hamjamiyat fikrlari',
+    feedbackBody: 'Loyihalarni ko‘rgan va o‘z fikrini qoldirgan odamlarning qisqa izohlari.',
+    averageScore: 'o‘rtacha baho',
+    openFeedback: 'Muhokamani ochish',
+    reply: 'muallif javobi',
   },
   JP: {
     workspace: 'JDU ポートフォリオワークスペース',
@@ -277,6 +424,11 @@ const ui: Record<Language, Record<string, string>> = {
     ask: '質問する',
     post: '投稿',
     reviewReady: '4項目中3項目が準備済み',
+    feedback: 'コミュニティの声',
+    feedbackBody: '作品を見てコメントを残した人たちからの短いフィードバック。',
+    averageScore: '平均評価',
+    openFeedback: '質問を見る',
+    reply: '作者の返信',
   },
 };
 
@@ -313,7 +465,7 @@ export default function Home() {
   const [detailTab, setDetailTab] = useState<DetailTab>('overview');
   const [showAdd, setShowAdd] = useState(false);
   const [question, setQuestion] = useState('');
-  const [questions, setQuestions] = useState<Record<string, string[]>>({});
+  const [questions, setQuestions] = useState<Record<string, Question[]>>(initialQuestions);
   const [toast, setToast] = useState('');
   const t = ui[language];
   const featured = projects[0];
@@ -369,7 +521,15 @@ export default function Home() {
   function postQuestion(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!selected || !question.trim()) return;
-    setQuestions((current) => ({ ...current, [selected.id]: [...(current[selected.id] || []), question.trim()] }));
+    const newQuestion: Question = {
+      id: `q-${selected.id}-${Date.now()}`,
+      author: 'You',
+      initials: 'YO',
+      role: 'viewer',
+      time: 'just now',
+      text: question.trim(),
+    };
+    setQuestions((current) => ({ ...current, [selected.id]: [...(current[selected.id] || []), newQuestion] }));
     setQuestion('');
     notify('Question added to the project board.');
   }
@@ -404,10 +564,12 @@ export default function Home() {
           <section className="library-section" id="library"><div className="section-heading"><div><p className="eyebrow">03 / LIBRARY</p><h2>{t.library}</h2><p>{t.libraryBody}</p></div><button className="outline-button" type="button" onClick={() => setShowAdd(true)}>+ {t.add}</button></div><div className="library-toolbar"><div className="status-tabs">{[['All', t.all], ['Published', t.published], ['Draft', t.drafts]].map(([key, label]) => <button className={filter === key ? 'is-active' : ''} key={key} type="button" onClick={() => setFilter(key)}>{label}</button>)}</div><div className="category-selects"><select aria-label={t.category} value={category} onChange={(event) => setCategory(event.target.value)}>{categories.map((item) => <option key={item} value={item}>{item === 'All' ? t.all : item}</option>)}</select><label className="search-input"><span>⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t.search} aria-label={t.search} /></label></div></div><div className="project-grid">{filteredProjects.map((project) => <article className="portfolio-card" key={project.id}><button className="portfolio-card-main" type="button" onClick={() => selectProject(project)}><ProjectVisual project={project} /><div className="portfolio-card-body"><div className="portfolio-card-title"><h3>{project.title}</h3><span>↗</span></div><p>{project.description}</p></div></button><div className="portfolio-card-footer"><span>{project.category}</span><span className={`status-pill status-pill--${project.status.toLowerCase()}`}>{project.status}</span></div></article>)}</div>{filteredProjects.length === 0 && <div className="empty-library">No projects match this filter.</div>}</section>
 
           <section className="review-strip" id="review"><div><p className="eyebrow">04 / READY TO SHARE</p><h2>Every project deserves a clear story.</h2><p>Before the report meeting, make sure the viewer can understand the problem, the solution, and where to try it.</p></div><div className="review-items"><span><b>01</b> Explain the problem</span><span><b>02</b> Show the flow</span><span><b>03</b> Link the demo</span></div></section>
+
+          <section className="feedback-section" id="feedback"><div className="section-heading feedback-heading"><div><p className="eyebrow">05 / COMMUNITY PULSE</p><h2>{t.feedback}</h2><p>{t.feedbackBody}</p></div><div className="feedback-score"><b>4.7</b><span>★★★★★</span><small>{t.averageScore}</small></div></div><div className="feedback-grid">{feedback.map((item) => <button className="feedback-card" type="button" key={item.id} onClick={() => { const project = projects.find((candidate) => candidate.id === item.projectId); if (project) { selectProject(project); setDetailTab('questions'); } }}><div className="feedback-card-top"><span className="feedback-avatar">{item.initials}</span><span className="feedback-meta"><b>{item.author}</b><small>{item.role}</small></span><span className="feedback-stars">{'★'.repeat(item.rating)}<i>{'★'.repeat(5 - item.rating)}</i></span></div><p>“{item.text}”</p><span className="feedback-project">{item.project}<span>↗</span></span></button>)}</div></section>
         </div>
       </section>
 
-      {selected && <div className="drawer-backdrop" role="presentation" onClick={() => setSelected(null)}><aside className="project-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">{t.projectDetails} / {selected.id}</span><button className="close-button" type="button" aria-label={t.close} onClick={() => setSelected(null)}>×</button></div><ProjectVisual project={selected} large /><div className="drawer-content"><div className="drawer-title-row"><div><p className="eyebrow">{selected.category}</p><h2 id="drawer-title">{selected.title}</h2><p className="drawer-owner">{t.by} {selected.owner} · {selected.updated}</p></div><span className={`status-pill status-pill--${selected.status.toLowerCase()}`}>{selected.status}</span></div><div className="detail-tabs">{([['overview', t.overviewTab], ['questions', t.questions], ['board', t.board]] as [DetailTab, string][]).map(([key, label]) => <button className={detailTab === key ? 'is-active' : ''} key={key} type="button" onClick={() => setDetailTab(key)}>{label}</button>)}</div>{detailTab === 'overview' && <div className="detail-panel"><p className="detail-description">{selected.description}</p><div className="detail-stats"><span><b>{selected.views}</b><small>{t.views}</small></span><span><b>{selected.features.length.toString().padStart(2, '0')}</b><small>{t.features}</small></span><span><b>{selected.demoUrl ? '01' : '—'}</b><small>{t.demo}</small></span></div><h3>{t.features}</h3><ul className="feature-list">{selected.features.map((feature) => <li key={feature}><span>✓</span>{feature}</li>)}</ul><div className="tag-row">{selected.tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>{selected.demoUrl ? <a className="primary-button" href={selected.demoUrl} target="_blank" rel="noreferrer">Open demo <span>↗</span></a> : <button className="soft-button" type="button" onClick={() => notify(t.noDemo)}>{t.noDemo} <span>↗</span></button>}</div>}{detailTab === 'questions' && <div className="detail-panel"><div className="question-list">{selectedQuestions.length === 0 ? <p className="empty-detail">{t.noQuestions}</p> : selectedQuestions.map((item, index) => <div className="question-item" key={`${item}-${index}`}><span>JD</span><p>{item}</p></div>)}</div><form className="question-form" onSubmit={postQuestion}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={t.ask} aria-label={t.ask} /><button className="primary-button" type="submit">{t.post} <span>↗</span></button></form></div>}{detailTab === 'board' && <div className="detail-panel"><div className="board-grid"><div><span>01 / TODO</span><b>Shape the story</b><i>Problem statement</i><i>Audience notes</i></div><div><span>02 / IN PROGRESS</span><b>Build the flow</b><i>Core interaction</i><i>Responsive pass</i></div><div><span>03 / DONE</span><b>Show the work</b><i>Project concept</i><i>Visual direction</i></div></div></div>}</div></aside></div>}
+      {selected && <div className="drawer-backdrop" role="presentation" onClick={() => setSelected(null)}><aside className="project-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">{t.projectDetails} / {selected.id}</span><button className="close-button" type="button" aria-label={t.close} onClick={() => setSelected(null)}>×</button></div><ProjectVisual project={selected} large /><div className="drawer-content"><div className="drawer-title-row"><div><p className="eyebrow">{selected.category}</p><h2 id="drawer-title">{selected.title}</h2><p className="drawer-owner">{t.by} {selected.owner} · {selected.updated}</p></div><span className={`status-pill status-pill--${selected.status.toLowerCase()}`}>{selected.status}</span></div><div className="detail-tabs">{([['overview', t.overviewTab], ['questions', t.questions], ['board', t.board]] as [DetailTab, string][]).map(([key, label]) => <button className={detailTab === key ? 'is-active' : ''} key={key} type="button" onClick={() => setDetailTab(key)}>{label}</button>)}</div>{detailTab === 'overview' && <div className="detail-panel"><p className="detail-description">{selected.description}</p><div className="detail-stats"><span><b>{selected.views}</b><small>{t.views}</small></span><span><b>{selected.features.length.toString().padStart(2, '0')}</b><small>{t.features}</small></span><span><b>{selected.demoUrl ? '01' : '—'}</b><small>{t.demo}</small></span></div><h3>{t.features}</h3><ul className="feature-list">{selected.features.map((feature) => <li key={feature}><span>✓</span>{feature}</li>)}</ul><div className="tag-row">{selected.tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>{selected.demoUrl ? <a className="primary-button" href={selected.demoUrl} target="_blank" rel="noreferrer">Open demo <span>↗</span></a> : <button className="soft-button" type="button" onClick={() => notify(t.noDemo)}>{t.noDemo} <span>↗</span></button>}</div>}{detailTab === 'questions' && <div className="detail-panel"><div className="question-list">{selectedQuestions.length === 0 ? <p className="empty-detail">{t.noQuestions}</p> : selectedQuestions.map((item) => <div className="question-item" key={item.id}><span className="question-avatar">{item.initials}</span><div className="question-copy"><div className="question-meta"><b>{item.author}</b><small>{item.role} · {item.time}</small></div><p>{item.text}</p>{item.answer && <div className="question-answer"><span className="answer-avatar">{item.answer.initials}</span><div><div className="question-meta"><b>{item.answer.author}</b><small>{t.reply}</small></div><p>{item.answer.text}</p></div></div>}</div></div>)}</div><form className="question-form" onSubmit={postQuestion}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={t.ask} aria-label={t.ask} /><button className="primary-button" type="submit">{t.post} <span>↗</span></button></form></div>}{detailTab === 'board' && <div className="detail-panel"><div className="board-grid"><div><span>01 / TODO</span><b>Shape the story</b><i>Problem statement</i><i>Audience notes</i></div><div><span>02 / IN PROGRESS</span><b>Build the flow</b><i>Core interaction</i><i>Responsive pass</i></div><div><span>03 / DONE</span><b>Show the work</b><i>Project concept</i><i>Visual direction</i></div></div><div className="board-review"><span className="board-review-mark">✦</span><div><b>Latest feedback</b><p>{feedback.find((item) => item.projectId === selected.id)?.text || 'The project is ready for another round of notes.'}</p></div></div></div>}</div></aside></div>}
 
       {showAdd && <div className="drawer-backdrop" role="presentation" onClick={() => setShowAdd(false)}><form className="add-drawer" onSubmit={handleAdd} onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">PROJECT INTAKE / 001</span><button className="close-button" type="button" aria-label={t.close} onClick={() => setShowAdd(false)}>×</button></div><h2>{t.addTitle}</h2><p>{t.addBody}</p><label>{t.title}<input name="title" required placeholder="JDU / ..." /></label><label>{t.owner}<input name="owner" required placeholder="Your name" /></label><label>{t.category}<select name="category" defaultValue="Culture + code"><option>Learning systems</option><option>Community tools</option><option>Culture + code</option></select></label><label>{t.description}<textarea name="description" required placeholder="What does this project make possible?" rows={4} /></label><label>{t.demoUrl}<input name="demoUrl" type="url" placeholder="https://..." /></label><button className="primary-button" type="submit">{t.save}<span>↗</span></button></form></div>}
       {toast && <div className="toast" role="status">{toast}<button type="button" onClick={() => setToast('')}>×</button></div>}
