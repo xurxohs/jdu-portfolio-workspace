@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 
 type Language = 'EN' | 'RU' | 'UZ' | 'JP';
 type Accent = 'violet' | 'orange' | 'blue' | 'green' | 'pink';
@@ -267,6 +267,10 @@ const ui: Record<Language, Record<string, string>> = {
     averageScore: 'average score',
     openFeedback: 'Open discussion',
     reply: 'creator reply',
+    leaveFeedback: 'Leave feedback',
+    feedbackPlaceholder: 'What did you notice in this project?',
+    saveFeedback: 'Post feedback',
+    feedbackSaved: 'Feedback saved to the project.',
   },
   RU: {
     workspace: 'рабочее пространство JDU',
@@ -321,6 +325,10 @@ const ui: Record<Language, Record<string, string>> = {
     averageScore: 'средняя оценка',
     openFeedback: 'Открыть обсуждение',
     reply: 'ответ автора',
+    leaveFeedback: 'Оставить отзыв',
+    feedbackPlaceholder: 'Что ты заметил в этом проекте?',
+    saveFeedback: 'Опубликовать отзыв',
+    feedbackSaved: 'Отзыв сохранён в проекте.',
   },
   UZ: {
     workspace: 'JDU portfolio ish maydoni',
@@ -375,6 +383,10 @@ const ui: Record<Language, Record<string, string>> = {
     averageScore: 'o‘rtacha baho',
     openFeedback: 'Muhokamani ochish',
     reply: 'muallif javobi',
+    leaveFeedback: 'Fikr qoldirish',
+    feedbackPlaceholder: 'Bu loyihada nimani sezdingiz?',
+    saveFeedback: 'Fikrni joylash',
+    feedbackSaved: 'Fikr loyihaga saqlandi.',
   },
   JP: {
     workspace: 'JDU ポートフォリオワークスペース',
@@ -429,6 +441,10 @@ const ui: Record<Language, Record<string, string>> = {
     averageScore: '平均評価',
     openFeedback: '質問を見る',
     reply: '作者の返信',
+    leaveFeedback: 'フィードバックを書く',
+    feedbackPlaceholder: 'この作品について気づいたことは？',
+    saveFeedback: '投稿する',
+    feedbackSaved: 'フィードバックを保存しました。',
   },
 };
 
@@ -466,9 +482,31 @@ export default function Home() {
   const [showAdd, setShowAdd] = useState(false);
   const [question, setQuestion] = useState('');
   const [questions, setQuestions] = useState<Record<string, Question[]>>(initialQuestions);
+  const [reviews, setReviews] = useState<Review[]>(feedback);
+  const [reviewText, setReviewText] = useState('');
+  const [reviewRating, setReviewRating] = useState('5');
   const [toast, setToast] = useState('');
   const t = ui[language];
   const featured = projects[0];
+
+  useEffect(() => {
+    let active = true;
+    fetch('/api/portfolio', { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error('Portfolio API unavailable');
+        return response.json() as Promise<{ projects: Project[]; questions: Record<string, Question[]>; reviews: Review[] }>;
+      })
+      .then((data) => {
+        if (!active) return;
+        setProjects(data.projects);
+        setQuestions(data.questions);
+        setReviews(data.reviews);
+      })
+      .catch(() => {
+        // The seed data keeps the first paint useful while a local backend is unavailable.
+      });
+    return () => { active = false; };
+  }, []);
 
   const filteredProjects = useMemo(() => projects.filter((project) => {
     const statusMatch = filter === 'All' || project.status === filter;
@@ -495,47 +533,77 @@ export default function Home() {
     window.setTimeout(() => setToast(''), 3600);
   }
 
-  function handleAdd(event: FormEvent<HTMLFormElement>) {
+  async function handleAdd(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const newProject: Project = {
-      id: String(projects.length + 1).padStart(2, '0'),
+    const payload = {
       title: String(form.get('title') || 'Untitled project'),
       owner: String(form.get('owner') || 'JDU student'),
       category: String(form.get('category') || 'Culture + code'),
-      status: 'Draft',
       description: String(form.get('description') || 'A new project in the JDU portfolio workspace.'),
-      tags: ['New', 'JDU', 'Draft'],
-      accent: 'pink',
-      updated: 'Just now',
-      views: '—',
-      features: ['Project story', 'External link', 'Questions + board'],
       demoUrl: String(form.get('demoUrl') || ''),
     };
-    setProjects((current) => [newProject, ...current]);
-    setShowAdd(false);
-    notify(t.added);
-    event.currentTarget.reset();
+    try {
+      const response = await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) throw new Error('Project could not be saved');
+      const saved = await response.json() as Project;
+      setProjects((current) => [saved, ...current]);
+      setShowAdd(false);
+      notify(t.added);
+      event.currentTarget.reset();
+    } catch {
+      notify('The project could not be saved. Please try again.');
+    }
   }
 
-  function postQuestion(event: FormEvent<HTMLFormElement>) {
+  async function postQuestion(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!selected || !question.trim()) return;
-    const newQuestion: Question = {
-      id: `q-${selected.id}-${Date.now()}`,
-      author: 'You',
-      initials: 'YO',
-      role: 'viewer',
-      time: 'just now',
-      text: question.trim(),
-    };
-    setQuestions((current) => ({ ...current, [selected.id]: [...(current[selected.id] || []), newQuestion] }));
-    setQuestion('');
-    notify('Question added to the project board.');
+    const projectId = selected.id;
+    try {
+      const response = await fetch('/api/questions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectId, text: question.trim() }),
+      });
+      if (!response.ok) throw new Error('Question could not be saved');
+      const saved = await response.json() as Question;
+      setQuestions((current) => ({ ...current, [projectId]: [...(current[projectId] || []), saved] }));
+      setQuestion('');
+      notify('Question added to the project board.');
+    } catch {
+      notify('The question could not be saved. Please try again.');
+    }
+  }
+
+  async function postReview(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!selected || !reviewText.trim()) return;
+    const projectId = selected.id;
+    try {
+      const response = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectId, rating: Number(reviewRating), text: reviewText.trim() }),
+      });
+      if (!response.ok) throw new Error('Feedback could not be saved');
+      const saved = await response.json() as Review;
+      setReviews((current) => [saved, ...current]);
+      setReviewText('');
+      setReviewRating('5');
+      notify(t.feedbackSaved);
+    } catch {
+      notify('The feedback could not be saved. Please try again.');
+    }
   }
 
   const viewTitle = view === 'review' ? t.review : view === 'categories' ? t.categories : view === 'overview' ? t.overview : t.projects;
   const selectedQuestions = selected ? questions[selected.id] || [] : [];
+  const averageRating = reviews.length ? (reviews.reduce((sum, item) => sum + item.rating, 0) / reviews.length).toFixed(1) : '—';
 
   return (
     <main className={`dashboard ${sidebarCollapsed ? 'dashboard--collapsed' : ''} ${sidebarOpen ? 'dashboard--mobile-open' : ''}`}>
@@ -565,11 +633,11 @@ export default function Home() {
 
           <section className="review-strip" id="review"><div><p className="eyebrow">04 / READY TO SHARE</p><h2>Every project deserves a clear story.</h2><p>Before the report meeting, make sure the viewer can understand the problem, the solution, and where to try it.</p></div><div className="review-items"><span><b>01</b> Explain the problem</span><span><b>02</b> Show the flow</span><span><b>03</b> Link the demo</span></div></section>
 
-          <section className="feedback-section" id="feedback"><div className="section-heading feedback-heading"><div><p className="eyebrow">05 / COMMUNITY PULSE</p><h2>{t.feedback}</h2><p>{t.feedbackBody}</p></div><div className="feedback-score"><b>4.7</b><span>★★★★★</span><small>{t.averageScore}</small></div></div><div className="feedback-grid">{feedback.map((item) => <button className="feedback-card" type="button" key={item.id} onClick={() => { const project = projects.find((candidate) => candidate.id === item.projectId); if (project) { selectProject(project); setDetailTab('questions'); } }}><div className="feedback-card-top"><span className="feedback-avatar">{item.initials}</span><span className="feedback-meta"><b>{item.author}</b><small>{item.role}</small></span><span className="feedback-stars">{'★'.repeat(item.rating)}<i>{'★'.repeat(5 - item.rating)}</i></span></div><p>“{item.text}”</p><span className="feedback-project">{item.project}<span>↗</span></span></button>)}</div></section>
+          <section className="feedback-section" id="feedback"><div className="section-heading feedback-heading"><div><p className="eyebrow">05 / COMMUNITY PULSE</p><h2>{t.feedback}</h2><p>{t.feedbackBody}</p></div><div className="feedback-score"><b>{averageRating}</b><span>★★★★★</span><small>{t.averageScore}</small></div></div><div className="feedback-grid">{reviews.map((item) => <button className="feedback-card" type="button" key={item.id} onClick={() => { const project = projects.find((candidate) => candidate.id === item.projectId); if (project) { selectProject(project); setDetailTab('questions'); } }}><div className="feedback-card-top"><span className="feedback-avatar">{item.initials}</span><span className="feedback-meta"><b>{item.author}</b><small>{item.role}</small></span><span className="feedback-stars">{'★'.repeat(item.rating)}<i>{'★'.repeat(5 - item.rating)}</i></span></div><p>“{item.text}”</p><span className="feedback-project">{item.project}<span>↗</span></span></button>)}</div></section>
         </div>
       </section>
 
-      {selected && <div className="drawer-backdrop" role="presentation" onClick={() => setSelected(null)}><aside className="project-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">{t.projectDetails} / {selected.id}</span><button className="close-button" type="button" aria-label={t.close} onClick={() => setSelected(null)}>×</button></div><ProjectVisual project={selected} large /><div className="drawer-content"><div className="drawer-title-row"><div><p className="eyebrow">{selected.category}</p><h2 id="drawer-title">{selected.title}</h2><p className="drawer-owner">{t.by} {selected.owner} · {selected.updated}</p></div><span className={`status-pill status-pill--${selected.status.toLowerCase()}`}>{selected.status}</span></div><div className="detail-tabs">{([['overview', t.overviewTab], ['questions', t.questions], ['board', t.board]] as [DetailTab, string][]).map(([key, label]) => <button className={detailTab === key ? 'is-active' : ''} key={key} type="button" onClick={() => setDetailTab(key)}>{label}</button>)}</div>{detailTab === 'overview' && <div className="detail-panel"><p className="detail-description">{selected.description}</p><div className="detail-stats"><span><b>{selected.views}</b><small>{t.views}</small></span><span><b>{selected.features.length.toString().padStart(2, '0')}</b><small>{t.features}</small></span><span><b>{selected.demoUrl ? '01' : '—'}</b><small>{t.demo}</small></span></div><h3>{t.features}</h3><ul className="feature-list">{selected.features.map((feature) => <li key={feature}><span>✓</span>{feature}</li>)}</ul><div className="tag-row">{selected.tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>{selected.demoUrl ? <a className="primary-button" href={selected.demoUrl} target="_blank" rel="noreferrer">Open demo <span>↗</span></a> : <button className="soft-button" type="button" onClick={() => notify(t.noDemo)}>{t.noDemo} <span>↗</span></button>}</div>}{detailTab === 'questions' && <div className="detail-panel"><div className="question-list">{selectedQuestions.length === 0 ? <p className="empty-detail">{t.noQuestions}</p> : selectedQuestions.map((item) => <div className="question-item" key={item.id}><span className="question-avatar">{item.initials}</span><div className="question-copy"><div className="question-meta"><b>{item.author}</b><small>{item.role} · {item.time}</small></div><p>{item.text}</p>{item.answer && <div className="question-answer"><span className="answer-avatar">{item.answer.initials}</span><div><div className="question-meta"><b>{item.answer.author}</b><small>{t.reply}</small></div><p>{item.answer.text}</p></div></div>}</div></div>)}</div><form className="question-form" onSubmit={postQuestion}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={t.ask} aria-label={t.ask} /><button className="primary-button" type="submit">{t.post} <span>↗</span></button></form></div>}{detailTab === 'board' && <div className="detail-panel"><div className="board-grid"><div><span>01 / TODO</span><b>Shape the story</b><i>Problem statement</i><i>Audience notes</i></div><div><span>02 / IN PROGRESS</span><b>Build the flow</b><i>Core interaction</i><i>Responsive pass</i></div><div><span>03 / DONE</span><b>Show the work</b><i>Project concept</i><i>Visual direction</i></div></div><div className="board-review"><span className="board-review-mark">✦</span><div><b>Latest feedback</b><p>{feedback.find((item) => item.projectId === selected.id)?.text || 'The project is ready for another round of notes.'}</p></div></div></div>}</div></aside></div>}
+      {selected && <div className="drawer-backdrop" role="presentation" onClick={() => setSelected(null)}><aside className="project-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">{t.projectDetails} / {selected.id}</span><button className="close-button" type="button" aria-label={t.close} onClick={() => setSelected(null)}>×</button></div><ProjectVisual project={selected} large /><div className="drawer-content"><div className="drawer-title-row"><div><p className="eyebrow">{selected.category}</p><h2 id="drawer-title">{selected.title}</h2><p className="drawer-owner">{t.by} {selected.owner} · {selected.updated}</p></div><span className={`status-pill status-pill--${selected.status.toLowerCase()}`}>{selected.status}</span></div><div className="detail-tabs">{([['overview', t.overviewTab], ['questions', t.questions], ['board', t.board]] as [DetailTab, string][]).map(([key, label]) => <button className={detailTab === key ? 'is-active' : ''} key={key} type="button" onClick={() => setDetailTab(key)}>{label}</button>)}</div>{detailTab === 'overview' && <div className="detail-panel"><p className="detail-description">{selected.description}</p><div className="detail-stats"><span><b>{selected.views}</b><small>{t.views}</small></span><span><b>{selected.features.length.toString().padStart(2, '0')}</b><small>{t.features}</small></span><span><b>{selected.demoUrl ? '01' : '—'}</b><small>{t.demo}</small></span></div><h3>{t.features}</h3><ul className="feature-list">{selected.features.map((feature) => <li key={feature}><span>✓</span>{feature}</li>)}</ul><div className="tag-row">{selected.tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>{selected.demoUrl ? <a className="primary-button" href={selected.demoUrl} target="_blank" rel="noreferrer">Open demo <span>↗</span></a> : <button className="soft-button" type="button" onClick={() => notify(t.noDemo)}>{t.noDemo} <span>↗</span></button>}</div>}{detailTab === 'questions' && <div className="detail-panel"><div className="question-list">{selectedQuestions.length === 0 ? <p className="empty-detail">{t.noQuestions}</p> : selectedQuestions.map((item) => <div className="question-item" key={item.id}><span className="question-avatar">{item.initials}</span><div className="question-copy"><div className="question-meta"><b>{item.author}</b><small>{item.role} · {item.time}</small></div><p>{item.text}</p>{item.answer && <div className="question-answer"><span className="answer-avatar">{item.answer.initials}</span><div><div className="question-meta"><b>{item.answer.author}</b><small>{t.reply}</small></div><p>{item.answer.text}</p></div></div>}</div></div>)}</div><form className="question-form" onSubmit={postQuestion}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={t.ask} aria-label={t.ask} /><button className="primary-button" type="submit">{t.post} <span>↗</span></button></form><form className="review-form" onSubmit={postReview}><div className="review-form-heading"><b>{t.leaveFeedback}</b><span>1–5</span></div><div className="review-form-row"><select aria-label={t.averageScore} value={reviewRating} onChange={(event) => setReviewRating(event.target.value)}><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select><input value={reviewText} onChange={(event) => setReviewText(event.target.value)} placeholder={t.feedbackPlaceholder} aria-label={t.feedbackPlaceholder} /><button className="primary-button" type="submit">{t.saveFeedback} <span>↗</span></button></div></form></div>}{detailTab === 'board' && <div className="detail-panel"><div className="board-grid"><div><span>01 / TODO</span><b>Shape the story</b><i>Problem statement</i><i>Audience notes</i></div><div><span>02 / IN PROGRESS</span><b>Build the flow</b><i>Core interaction</i><i>Responsive pass</i></div><div><span>03 / DONE</span><b>Show the work</b><i>Project concept</i><i>Visual direction</i></div></div><div className="board-review"><span className="board-review-mark">✦</span><div><b>Latest feedback</b><p>{reviews.find((item) => item.projectId === selected.id)?.text || 'The project is ready for another round of notes.'}</p></div></div></div>}</div></aside></div>}
 
       {showAdd && <div className="drawer-backdrop" role="presentation" onClick={() => setShowAdd(false)}><form className="add-drawer" onSubmit={handleAdd} onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">PROJECT INTAKE / 001</span><button className="close-button" type="button" aria-label={t.close} onClick={() => setShowAdd(false)}>×</button></div><h2>{t.addTitle}</h2><p>{t.addBody}</p><label>{t.title}<input name="title" required placeholder="JDU / ..." /></label><label>{t.owner}<input name="owner" required placeholder="Your name" /></label><label>{t.category}<select name="category" defaultValue="Culture + code"><option>Learning systems</option><option>Community tools</option><option>Culture + code</option></select></label><label>{t.description}<textarea name="description" required placeholder="What does this project make possible?" rows={4} /></label><label>{t.demoUrl}<input name="demoUrl" type="url" placeholder="https://..." /></label><button className="primary-button" type="submit">{t.save}<span>↗</span></button></form></div>}
       {toast && <div className="toast" role="status">{toast}<button type="button" onClick={() => setToast('')}>×</button></div>}
