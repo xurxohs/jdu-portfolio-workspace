@@ -38,9 +38,29 @@ export type PortfolioData = {
   }>;
 };
 
+export type ProfileData = {
+  name: string;
+  handle: string;
+  role: string;
+  track: string;
+  bio: string;
+};
+
+export type BoardColumn = 'todo' | 'progress' | 'done';
+
+export type BoardItem = {
+  id: string;
+  projectId: string;
+  column: BoardColumn;
+  title: string;
+  detail: string;
+};
+
 type DbProject = Record<string, unknown>;
 type DbQuestion = Record<string, unknown>;
 type DbReview = Record<string, unknown>;
+type DbProfile = Record<string, unknown>;
+type DbBoardItem = Record<string, unknown>;
 
 const bootstrapStatements = [
   `CREATE TABLE IF NOT EXISTS projects (id TEXT PRIMARY KEY NOT NULL, title TEXT NOT NULL, owner TEXT NOT NULL, owner_id TEXT NOT NULL, category TEXT NOT NULL, status TEXT NOT NULL, description TEXT NOT NULL, tags_json TEXT NOT NULL, accent TEXT NOT NULL, updated TEXT NOT NULL, views TEXT NOT NULL, features_json TEXT NOT NULL, demo_url TEXT NOT NULL, created_at TEXT NOT NULL)`,
@@ -51,6 +71,9 @@ const bootstrapStatements = [
   `CREATE INDEX IF NOT EXISTS idx_questions_project_id ON questions (project_id)`,
   `CREATE TABLE IF NOT EXISTS reviews (id TEXT PRIMARY KEY NOT NULL, project_id TEXT NOT NULL, project TEXT NOT NULL, author TEXT NOT NULL, initials TEXT NOT NULL, role TEXT NOT NULL, rating INTEGER NOT NULL, text TEXT NOT NULL, created_at TEXT NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS idx_reviews_project_id ON reviews (project_id)`,
+  `CREATE TABLE IF NOT EXISTS profiles (user_id TEXT PRIMARY KEY NOT NULL, name TEXT NOT NULL, handle TEXT NOT NULL, role TEXT NOT NULL, track TEXT NOT NULL, bio TEXT NOT NULL, updated_at TEXT NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS board_items (id TEXT PRIMARY KEY NOT NULL, project_id TEXT NOT NULL, column_key TEXT NOT NULL, title TEXT NOT NULL, detail TEXT NOT NULL, created_at TEXT NOT NULL)`,
+  `CREATE INDEX IF NOT EXISTS idx_board_items_project_id ON board_items (project_id)`,
 ];
 
 const seedProjects = [
@@ -75,6 +98,21 @@ const seedReviews = [
   ['r-03', '03', 'JDU Open Archive', 'Timur K.', 'TK', 'portfolio reviewer', 4, 'Clear enough to present in three minutes, but deep enough to keep exploring. The project story is strong.'],
 ] as const;
 
+const seedBoardItems = [
+  ['b-01-01', '01', 'todo', 'Shape the story', 'Problem statement'],
+  ['b-01-02', '01', 'todo', 'Name the audience', 'Audience notes'],
+  ['b-01-03', '01', 'progress', 'Build the flow', 'Core interaction'],
+  ['b-01-04', '01', 'progress', 'Responsive pass', 'Mobile and desktop'],
+  ['b-01-05', '01', 'done', 'Show the work', 'Project concept'],
+  ['b-01-06', '01', 'done', 'Visual direction', 'Rocket interface'],
+  ['b-02-01', '02', 'todo', 'Collect local voices', 'Review prompts'],
+  ['b-02-02', '02', 'progress', 'Map the flow', 'Search and filters'],
+  ['b-02-03', '02', 'done', 'Test the first route', 'Restaurant detail'],
+  ['b-03-01', '03', 'todo', 'Clarify archive rules', 'Published vs draft'],
+  ['b-03-02', '03', 'progress', 'Connect project stories', 'Case study flow'],
+  ['b-03-03', '03', 'done', 'Prepare the demo', 'Report meeting'],
+] as const;
+
 function database() {
   const db = (env as unknown as { DB?: D1Database }).DB;
   if (!db) throw new Error('D1 binding DB is not available');
@@ -97,14 +135,18 @@ export async function ensureDatabase() {
   const db = database();
   await db.batch(bootstrapStatements.map((statement) => db.prepare(statement)));
   const countResult = await db.prepare('SELECT COUNT(*) AS count FROM projects').all<{ count: number }>();
-  if (Number(countResult.results[0]?.count || 0) > 0) return db;
-
   const now = new Date().toISOString();
-  await db.batch([
-    ...seedProjects.map((project) => db.prepare(`INSERT INTO projects (id, title, owner, owner_id, category, status, description, tags_json, accent, updated, views, features_json, demo_url, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(...project, now)),
-    ...seedQuestions.map((question) => db.prepare(`INSERT INTO questions (id, project_id, author, initials, role, time_label, text, answer_author, answer_initials, answer_text, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(...question, now)),
-    ...seedReviews.map((review) => db.prepare(`INSERT INTO reviews (id, project_id, project, author, initials, role, rating, text, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(...review, now)),
-  ]);
+  if (Number(countResult.results[0]?.count || 0) === 0) {
+    await db.batch([
+      ...seedProjects.map((project) => db.prepare(`INSERT INTO projects (id, title, owner, owner_id, category, status, description, tags_json, accent, updated, views, features_json, demo_url, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(...project, now)),
+      ...seedQuestions.map((question) => db.prepare(`INSERT INTO questions (id, project_id, author, initials, role, time_label, text, answer_author, answer_initials, answer_text, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(...question, now)),
+      ...seedReviews.map((review) => db.prepare(`INSERT INTO reviews (id, project_id, project, author, initials, role, rating, text, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(...review, now)),
+    ]);
+  }
+  const boardCountResult = await db.prepare('SELECT COUNT(*) AS count FROM board_items').all<{ count: number }>();
+  if (Number(boardCountResult.results[0]?.count || 0) === 0) {
+    await db.batch(seedBoardItems.map((item) => db.prepare(`INSERT INTO board_items (id, project_id, column_key, title, detail, created_at) VALUES (?, ?, ?, ?, ?, ?)`).bind(...item, now)));
+  }
   return db;
 }
 
@@ -177,16 +219,60 @@ export async function getPortfolioData(): Promise<PortfolioData> {
   };
 }
 
-export async function createProject(input: { title: string; owner: string; category: string; description: string; demoUrl: string }, user: CurrentUser) {
+function profileHandle(name: string) {
+  return `@${name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'jdu-creator'}`;
+}
+
+function mapProfile(row: DbProfile): ProfileData {
+  return {
+    name: String(row.name),
+    handle: String(row.handle),
+    role: String(row.role),
+    track: String(row.track),
+    bio: String(row.bio),
+  };
+}
+
+export async function getProfile(user: CurrentUser): Promise<ProfileData | null> {
+  const db = await ensureDatabase();
+  const result = await db.prepare('SELECT name, handle, role, track, bio FROM profiles WHERE user_id = ?').bind(user.id).all<DbProfile>();
+  return result.results[0] ? mapProfile(result.results[0]) : null;
+}
+
+export async function upsertProfile(input: Omit<ProfileData, 'handle'> & { handle?: string }, user: CurrentUser) {
+  const db = await ensureDatabase();
+  const profile = {
+    name: input.name.trim(),
+    handle: input.handle?.trim() || profileHandle(input.name),
+    role: input.role.trim(),
+    track: input.track.trim(),
+    bio: input.bio.trim(),
+  };
+  await db.prepare(`INSERT INTO profiles (user_id, name, handle, role, track, bio, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET name = excluded.name, handle = excluded.handle, role = excluded.role, track = excluded.track, bio = excluded.bio, updated_at = excluded.updated_at`).bind(user.id, profile.name, profile.handle, profile.role, profile.track, profile.bio, new Date().toISOString()).run();
+  return profile;
+}
+
+async function ownedProject(projectId: string, user: CurrentUser) {
+  const db = await ensureDatabase();
+  const result = await db.prepare('SELECT id, owner_id, title FROM projects WHERE id = ?').bind(projectId).all<{ id: string; owner_id: string; title: string }>();
+  const project = result.results[0];
+  if (!project) throw new Error('Project not found');
+  if (project.owner_id !== user.id) throw new Error('Project is not owned by this user');
+  return { db, project };
+}
+
+export async function createProject(input: { title: string; owner: string; category: string; description: string; demoUrl: string; status?: 'Published' | 'Draft' }, user: CurrentUser) {
   const db = await ensureDatabase();
   const id = idFor('p');
   const now = new Date().toISOString();
-  await db.prepare(`INSERT INTO projects (id, title, owner, owner_id, category, status, description, tags_json, accent, updated, views, features_json, demo_url, created_at) VALUES (?, ?, ?, ?, ?, 'Draft', ?, ?, 'pink', 'Just now', '—', ?, ?, ?)`).bind(
+  const status = input.status === 'Published' ? 'Published' : 'Draft';
+  await db.prepare(`INSERT INTO projects (id, title, owner, owner_id, category, status, description, tags_json, accent, updated, views, features_json, demo_url, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pink', 'Just now', '—', ?, ?, ?)`).bind(
     id,
     input.title,
     input.owner || user.name,
     user.id,
     input.category,
+    status,
     input.description,
     JSON.stringify(['New', 'JDU', 'Draft']),
     JSON.stringify(['Project story', 'External link', 'Questions + board']),
@@ -195,6 +281,60 @@ export async function createProject(input: { title: string; owner: string; categ
   ).run();
   const data = await getPortfolioData();
   return data.projects.find((project) => project.id === id);
+}
+
+export async function updateProject(projectId: string, input: { title: string; owner: string; category: string; description: string; demoUrl: string; status: 'Published' | 'Draft' }, user: CurrentUser) {
+  const { db } = await ownedProject(projectId, user);
+  await db.prepare(`UPDATE projects SET title = ?, owner = ?, category = ?, status = ?, description = ?, demo_url = ?, updated = 'Just now' WHERE id = ?`).bind(input.title, input.owner || user.name, input.category, input.status, input.description, input.demoUrl || '', projectId).run();
+  const data = await getPortfolioData();
+  return data.projects.find((project) => project.id === projectId);
+}
+
+export async function deleteProject(projectId: string, user: CurrentUser) {
+  const { db } = await ownedProject(projectId, user);
+  await db.batch([
+    db.prepare('DELETE FROM questions WHERE project_id = ?').bind(projectId),
+    db.prepare('DELETE FROM reviews WHERE project_id = ?').bind(projectId),
+    db.prepare('DELETE FROM board_items WHERE project_id = ?').bind(projectId),
+    db.prepare('DELETE FROM projects WHERE id = ?').bind(projectId),
+  ]);
+  return { id: projectId };
+}
+
+function mapBoardItem(row: DbBoardItem): BoardItem {
+  const column = String(row.column_key);
+  return {
+    id: String(row.id),
+    projectId: String(row.project_id),
+    column: column === 'progress' || column === 'done' ? column : 'todo',
+    title: String(row.title),
+    detail: String(row.detail),
+  };
+}
+
+export async function listBoardItems(projectId: string) {
+  const db = await ensureDatabase();
+  const result = await db.prepare('SELECT * FROM board_items WHERE project_id = ? ORDER BY created_at ASC, id ASC').bind(projectId).all<DbBoardItem>();
+  return result.results.map(mapBoardItem);
+}
+
+export async function createBoardItem(projectId: string, input: { column: BoardColumn; title: string; detail: string }, user: CurrentUser) {
+  const { db } = await ownedProject(projectId, user);
+  const id = idFor('b');
+  const now = new Date().toISOString();
+  await db.prepare('INSERT INTO board_items (id, project_id, column_key, title, detail, created_at) VALUES (?, ?, ?, ?, ?, ?)').bind(id, projectId, input.column, input.title, input.detail, now).run();
+  return { id, projectId, column: input.column, title: input.title, detail: input.detail } satisfies BoardItem;
+}
+
+export async function updateBoardItem(itemId: string, column: BoardColumn, user: CurrentUser) {
+  const db = await ensureDatabase();
+  const result = await db.prepare('SELECT id, project_id FROM board_items WHERE id = ?').bind(itemId).all<{ id: string; project_id: string }>();
+  const item = result.results[0];
+  if (!item) throw new Error('Board item not found');
+  await ownedProject(item.project_id, user);
+  await db.prepare('UPDATE board_items SET column_key = ? WHERE id = ?').bind(column, itemId).run();
+  const updated = await db.prepare('SELECT * FROM board_items WHERE id = ?').bind(itemId).all<DbBoardItem>();
+  return updated.results[0] ? mapBoardItem(updated.results[0]) : null;
 }
 
 export async function createQuestion(projectId: string, text: string, user: CurrentUser) {

@@ -50,3 +50,24 @@ export const reviews = sqliteTable('reviews', {
 }, (table) => ({
   projectIdx: index('idx_reviews_project_id').on(table.projectId),
 }));
+
+export const profiles = sqliteTable('profiles', {
+  userId: text('user_id').primaryKey(),
+  name: text('name').notNull(),
+  handle: text('handle').notNull(),
+  role: text('role').notNull(),
+  track: text('track').notNull(),
+  bio: text('bio').notNull(),
+  updatedAt: text('updated_at').notNull(),
+});
+
+export const boardItems = sqliteTable('board_items', {
+  id: text('id').primaryKey(),
+  projectId: text('project_id').notNull(),
+  columnKey: text('column_key').notNull(),
+  title: text('title').notNull(),
+  detail: text('detail').notNull(),
+  createdAt: text('created_at').notNull(),
+}, (table) => ({
+  projectIdx: index('idx_board_items_project_id').on(table.projectId),
+}));
