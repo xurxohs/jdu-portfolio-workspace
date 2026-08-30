@@ -258,6 +258,8 @@ const ui: Record<Language, Record<string, string>> = {
     languageSet: 'Four languages',
     communityTools: 'Questions + board',
     demoLinks: 'Real demo links',
+    demoReady: 'Demo link ready',
+    addFirstProject: 'Add your first project',
     continueSetup: 'Continue setup',
     featured: 'Featured project',
     featuredTitle: 'Make work easy to find.',
@@ -335,6 +337,8 @@ const ui: Record<Language, Record<string, string>> = {
     languageSet: 'Четыре языка',
     communityTools: 'Вопросы + доска',
     demoLinks: 'Реальные ссылки на демо',
+    demoReady: 'Демо-ссылка готова',
+    addFirstProject: 'Добавить свой проект',
     continueSetup: 'Продолжить настройку',
     featured: 'Избранный проект',
     featuredTitle: 'Пусть работу легко найти.',
@@ -412,6 +416,8 @@ const ui: Record<Language, Record<string, string>> = {
     languageSet: 'To‘rt til',
     communityTools: 'Savollar + doska',
     demoLinks: 'Haqiqiy demo havolalari',
+    demoReady: 'Demo havolasi tayyor',
+    addFirstProject: 'O‘z loyihangizni qo‘shing',
     continueSetup: 'Sozlashni davom ettirish',
     featured: 'Tanlangan loyiha',
     featuredTitle: 'Ishni topishni oson qiling.',
@@ -489,6 +495,8 @@ const ui: Record<Language, Record<string, string>> = {
     languageSet: '4つの言語',
     communityTools: '質問 + ボード',
     demoLinks: '実際のデモリンク',
+    demoReady: 'デモリンク準備完了',
+    addFirstProject: '自分の作品を追加',
     continueSetup: '設定を続ける',
     featured: '注目の作品',
     featuredTitle: '作品を見つけやすくする。',
@@ -627,7 +635,11 @@ export default function Home() {
   }), [category, filter, projects, query]);
 
   const profileComplete = Boolean(profile.name.trim() && profile.role.trim() && profile.track.trim() && profile.bio.trim());
-  const setupPercent = profileComplete ? 100 : profile.track.trim() || profile.bio.trim() ? 66 : 38;
+  const creatorProject = projects.find((project) => project.owner === profile.name);
+  const projectComplete = Boolean(creatorProject);
+  const demoComplete = Boolean(creatorProject?.demoUrl);
+  const setupPercent = !profileComplete ? (profile.track.trim() || profile.bio.trim() ? 44 : 38) : !projectComplete ? 58 : !demoComplete ? 82 : 100;
+  const setupLabel = !profileComplete ? t.completeProfile : !projectComplete ? t.addFirstProject : !demoComplete ? t.demoLinks : t.profileReady;
 
   function selectProject(project: Project) {
     setSelected(project);
@@ -666,7 +678,15 @@ export default function Home() {
       openProfile();
       return;
     }
-    setShowAdd(true);
+    if (!projectComplete) {
+      setShowAdd(true);
+      return;
+    }
+    if (creatorProject && !demoComplete) {
+      selectProject(creatorProject);
+      return;
+    }
+    navigate('review');
   }
 
   function handleProfileSave(event: FormEvent<HTMLFormElement>) {
@@ -768,7 +788,7 @@ export default function Home() {
         <nav className="sidebar-nav" aria-label="Portfolio navigation">
           {([['overview', t.overview, 'home'], ['projects', t.projects, 'projects'], ['categories', t.categories, 'categories'], ['review', t.review, 'review']] as [View, string, string][]).map(([key, label, icon]) => <button className={view === key ? 'is-active' : ''} key={key} type="button" onClick={() => navigate(key)}><NavIcon type={icon} /><span className="sidebar-copy">{label}</span>{key === 'projects' && <span className="nav-count">{projects.length}</span>}</button>)}
         </nav>
-        <div className="sidebar-bottom sidebar-copy"><div className="sidebar-rule" /><p>{profileComplete ? 'PROFILE READY' : 'SETUP / 03'}</p><div className="mini-progress"><span style={{ width: `${setupPercent}%` }} /></div><div className="mini-progress-row"><span>{profileComplete ? t.profileReady : t.completeProfile}</span><b>{setupPercent}%</b></div><button type="button" onClick={continueSetup}>{t.continueSetup} <span>↗</span></button></div>
+        <div className="sidebar-bottom sidebar-copy"><div className="sidebar-rule" /><p>{profileComplete ? 'PUBLISHING PATH' : 'SETUP / 03'}</p><div className="mini-progress"><span style={{ width: `${setupPercent}%` }} /></div><div className="mini-progress-row"><span>{setupLabel}</span><b>{setupPercent}%</b></div><button type="button" onClick={continueSetup}>{t.continueSetup} <span>↗</span></button></div>
         <button className="logout-button" type="button" onClick={() => notify('This is a portfolio demo workspace.') }><NavIcon type="exit" /><span className="sidebar-copy">Workspace settings</span></button>
       </aside>
 
@@ -778,7 +798,7 @@ export default function Home() {
         <div className="content-area">
           <section className="hero-grid" id="overview">
             <article className="welcome-card"><div className="welcome-copy"><p className="eyebrow">JDU / PORTFOLIO 2026</p><h2>{t.featuredTitle}</h2><p>{t.featuredBody}</p><div className="welcome-stats"><span><b>{projects.length.toString().padStart(2, '0')}</b><small>PROJECTS</small></span><span><b>04</b><small>LANGUAGES</small></span><span><b>01</b><small>ARCHIVE</small></span></div><button className="primary-button" type="button" onClick={() => selectProject(featured)}>{t.openProject}<span>↗</span></button></div><div className="welcome-visual"><ProjectVisual project={featured} large /><div className="visual-caption"><span>{t.featured}</span><b>{featured.title}</b></div></div></article>
-            <aside className="readiness-card"><div className="card-heading"><div><p className="eyebrow">02 / SETUP PATH</p><h2>{t.readiness}</h2></div><span className="more-button">•••</span></div><div className="readiness-ring"><span><b>{setupPercent}</b><small>% ready</small></span></div><p className="readiness-copy">{t.readinessBody}</p><ul className="checklist"><li className={profileComplete ? 'done' : ''}><span>{profileComplete ? '✓' : '01'}</span> {profileComplete ? t.profileReady : t.createProfile}</li><li className={projects.length > 0 ? 'done' : ''}><span>{projects.length > 0 ? '✓' : '02'}</span> {t.projectLibrary}</li><li className="done"><span>✓</span> {t.languageSet}</li><li className="done"><span>✓</span> {t.communityTools}</li><li><span>03</span> {t.demoLinks}</li></ul><button className="soft-button" type="button" onClick={continueSetup}>{t.continueSetup} <span>↗</span></button></aside>
+            <aside className="readiness-card"><div className="card-heading"><div><p className="eyebrow">02 / SETUP PATH</p><h2>{t.readiness}</h2></div><span className="more-button">•••</span></div><div className="readiness-ring"><span><b>{setupPercent}</b><small>% ready</small></span></div><p className="readiness-copy">{t.readinessBody}</p><ul className="checklist"><li className={profileComplete ? 'done' : ''}><span>{profileComplete ? '✓' : '01'}</span> {profileComplete ? t.profileReady : t.createProfile}</li><li className={projectComplete ? 'done' : ''}><span>{projectComplete ? '✓' : '02'}</span> {projectComplete ? t.projectLibrary : t.addFirstProject}</li><li className="done"><span>✓</span> {t.languageSet}</li><li className="done"><span>✓</span> {t.communityTools}</li><li className={demoComplete ? 'done' : ''}><span>{demoComplete ? '✓' : '03'}</span> {demoComplete ? t.demoReady : t.demoLinks}</li></ul><button className="soft-button" type="button" onClick={continueSetup}>{t.continueSetup} <span>↗</span></button></aside>
           </section>
 
           <section className="guide-card"><div className="guide-preview"><span className="guide-icon">JDU</span><span className="guide-play">▶</span></div><div className="guide-copy"><p className="eyebrow">START HERE · 03 MIN</p><h2>{t.guide}</h2><p>{t.guideBody}</p></div><button className="guide-button" type="button" onClick={() => notify('Guide mode will open once the portfolio content is connected.')}>{t.readGuide}<span>↗</span></button></section>
