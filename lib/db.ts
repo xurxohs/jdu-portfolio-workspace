@@ -15,6 +15,7 @@ export type PortfolioData = {
     views: string;
     features: string[];
     demoUrl: string;
+    coverUrl: string;
   }>;
   questions: Record<string, Array<{
     id: string;
@@ -121,6 +122,7 @@ function mapProject(row: DbProject) {
     views: String(row.views),
     features: jsonValue<string[]>(row.features_json, []),
     demoUrl: String(row.demo_url || ''),
+    coverUrl: `/api/media?kind=project&id=${encodeURIComponent(String(row.id))}`,
   };
 }
 
