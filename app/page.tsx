@@ -222,6 +222,7 @@ const ui: Record<Language, Record<string, string>> = {
     review: 'Portfolio review',
     status: 'Open archive',
     add: 'Add project',
+    demoBadge: 'Demo workspace · sample data',
     featured: 'Featured project',
     featuredTitle: 'Make work easy to find.',
     featuredBody: 'One focused home for student systems, stories, and prototypes — ready for the next person to open.',
@@ -249,7 +250,7 @@ const ui: Record<Language, Record<string, string>> = {
     demo: 'Demo link',
     noDemo: 'Add a demo URL before publishing',
     addTitle: 'Add a project',
-    addBody: 'Create a project card now. We can connect the real database and file uploads next.',
+    addBody: 'Add a case study to the archive. Replace the sample content with your real project and demo link.',
     title: 'Project name',
     owner: 'Creator / team',
     category: 'Category',
@@ -280,6 +281,7 @@ const ui: Record<Language, Record<string, string>> = {
     review: 'Проверка портфолио',
     status: 'Открытый архив',
     add: 'Добавить проект',
+    demoBadge: 'Учебная демонстрация · примерные данные',
     featured: 'Избранный проект',
     featuredTitle: 'Пусть работу легко найти.',
     featuredBody: 'Одно место для систем, историй и прототипов студентов — чтобы следующий человек мог их открыть.',
@@ -307,7 +309,7 @@ const ui: Record<Language, Record<string, string>> = {
     demo: 'Демо-ссылка',
     noDemo: 'Добавь URL демо перед публикацией',
     addTitle: 'Добавить проект',
-    addBody: 'Создай карточку проекта. Позже подключим настоящую базу и загрузку файлов.',
+    addBody: 'Добавь кейс в архив. Замени демонстрационные данные своим проектом и ссылкой на демо.',
     title: 'Название проекта',
     owner: 'Автор / команда',
     category: 'Категория',
@@ -338,6 +340,7 @@ const ui: Record<Language, Record<string, string>> = {
     review: 'Portfolio tekshiruvi',
     status: 'Ochiq arxiv',
     add: 'Loyiha qo‘shish',
+    demoBadge: 'Demo ish maydoni · namunaviy ma’lumotlar',
     featured: 'Tanlangan loyiha',
     featuredTitle: 'Ishni topishni oson qiling.',
     featuredBody: 'Talabalar tizimlari, hikoyalari va prototiplari uchun bitta joy.',
@@ -365,7 +368,7 @@ const ui: Record<Language, Record<string, string>> = {
     demo: 'Demo havolasi',
     noDemo: 'Nashrdan oldin demo URL qo‘shing',
     addTitle: 'Loyiha qo‘shish',
-    addBody: 'Hozir loyiha kartasini yarating. Keyin haqiqiy baza va fayl yuklashni ulaymiz.',
+    addBody: 'Arxivga case study qo‘shing. Namunaviy ma’lumotlarni haqiqiy loyiha va demo havolangiz bilan almashtiring.',
     title: 'Loyiha nomi',
     owner: 'Muallif / jamoa',
     category: 'Kategoriya',
@@ -396,6 +399,7 @@ const ui: Record<Language, Record<string, string>> = {
     review: 'ポートフォリオ確認',
     status: '公開アーカイブ',
     add: '作品を追加',
+    demoBadge: 'デモワークスペース・サンプルデータ',
     featured: '注目の作品',
     featuredTitle: '作品を見つけやすくする。',
     featuredBody: '学生のシステム、物語、プロトタイプをひとつの場所に。',
@@ -423,7 +427,7 @@ const ui: Record<Language, Record<string, string>> = {
     demo: 'デモリンク',
     noDemo: '公開前にデモURLを追加してください',
     addTitle: '作品を追加',
-    addBody: '作品カードを作成します。次にデータベースとファイルを接続できます。',
+    addBody: 'アーカイブにケーススタディを追加します。サンプルデータを実際の作品とデモリンクに置き換えてください。',
     title: '作品名',
     owner: '作者 / チーム',
     category: 'カテゴリー',
@@ -623,7 +627,7 @@ export default function Home() {
 
         <div className="content-area">
           <section className="hero-grid" id="overview">
-            <article className="welcome-card"><div className="welcome-copy"><p className="eyebrow">JDU / PORTFOLIO 2026</p><h2>{t.featuredTitle}</h2><p>{t.featuredBody}</p><div className="welcome-stats"><span><b>{projects.length.toString().padStart(2, '0')}</b><small>PROJECTS</small></span><span><b>04</b><small>LANGUAGES</small></span><span><b>01</b><small>ARCHIVE</small></span></div><button className="primary-button" type="button" onClick={() => selectProject(featured)}>{t.openProject}<span>↗</span></button></div><div className="welcome-visual"><ProjectVisual project={featured} large /><div className="visual-caption"><span>{t.featured}</span><b>{featured.title}</b></div></div></article>
+            <article className="welcome-card"><div className="welcome-copy"><p className="eyebrow">JDU / PORTFOLIO 2026</p><span className="demo-badge">{t.demoBadge}</span><h2>{t.featuredTitle}</h2><p>{t.featuredBody}</p><div className="welcome-stats"><span><b>{projects.length.toString().padStart(2, '0')}</b><small>PROJECTS</small></span><span><b>04</b><small>LANGUAGES</small></span><span><b>01</b><small>ARCHIVE</small></span></div><button className="primary-button" type="button" onClick={() => selectProject(featured)}>{t.openProject}<span>↗</span></button></div><div className="welcome-visual"><ProjectVisual project={featured} large /><div className="visual-caption"><span>{t.featured}</span><b>{featured.title}</b></div></div></article>
             <aside className="readiness-card"><div className="card-heading"><div><p className="eyebrow">02 / CHECKLIST</p><h2>{t.readiness}</h2></div><span className="more-button">•••</span></div><div className="readiness-ring"><span><b>76</b><small>% ready</small></span></div><p className="readiness-copy">{t.readinessBody}</p><ul className="checklist"><li className="done"><span>✓</span> Project library</li><li className="done"><span>✓</span> Four languages</li><li className="done"><span>✓</span> Questions + board</li><li><span>○</span> Real demo links</li></ul><button className="soft-button" type="button" onClick={() => navigate('review')}>{t.review} <span>↗</span></button></aside>
           </section>
 
