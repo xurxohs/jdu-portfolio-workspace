@@ -888,7 +888,6 @@ export default function Home() {
   const [toast, setToast] = useState('');
   const t = ui[language];
   const c = productCopy[language];
-  const featured = projects[0];
 
   useEffect(() => {
     let active = true;
@@ -1396,11 +1395,15 @@ export default function Home() {
             <span><b>4</b><small>{c.languagesLabel}</small></span>
           </div>
         </div>
-        <button className="featured-project" type="button" onClick={() => selectProject(featured)}>
-          <ProjectVisual project={featured} large />
-          <span className="featured-badge">✦ {c.featured}</span>
-          <span className="featured-info"><span><small>{featured.category}</small><b>{featured.title}</b><i>{t.by} {featured.owner}</i></span><strong>↗</strong></span>
-        </button>
+        <div className="hero-flow">
+          <div className="hero-flow-head"><p className="section-kicker"><span />{c.howKicker}</p><small>JDU / 2026</small></div>
+          <div className="hero-flow-list">
+            <article><b>01</b><div><strong>{c.stepOneTitle}</strong><small>{c.stepOneBody}</small></div><i>→</i></article>
+            <article><b>02</b><div><strong>{c.stepTwoTitle}</strong><small>{c.stepTwoBody}</small></div><i>→</i></article>
+            <article><b>03</b><div><strong>{c.stepThreeTitle}</strong><small>{c.stepThreeBody}</small></div><i>↗</i></article>
+          </div>
+          <div className="hero-flow-foot"><span>01</span><span className="is-current" /><span /><span /><span>03</span><small>{c.howTitle}</small></div>
+        </div>
       </section>
 
       <section className={`creator-banner ${profileComplete ? 'is-ready' : ''}`}>
