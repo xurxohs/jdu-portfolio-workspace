@@ -72,6 +72,7 @@ const bootstrapStatements = [
   `CREATE TABLE IF NOT EXISTS reviews (id TEXT PRIMARY KEY NOT NULL, project_id TEXT NOT NULL, project TEXT NOT NULL, author TEXT NOT NULL, initials TEXT NOT NULL, role TEXT NOT NULL, rating INTEGER NOT NULL, text TEXT NOT NULL, created_at TEXT NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS idx_reviews_project_id ON reviews (project_id)`,
   `CREATE TABLE IF NOT EXISTS profiles (user_id TEXT PRIMARY KEY NOT NULL, name TEXT NOT NULL, handle TEXT NOT NULL, role TEXT NOT NULL, track TEXT NOT NULL, bio TEXT NOT NULL, updated_at TEXT NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS registrations (id TEXT PRIMARY KEY NOT NULL, channel TEXT NOT NULL, contact TEXT NOT NULL, name TEXT NOT NULL, user_id TEXT, created_at TEXT NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS board_items (id TEXT PRIMARY KEY NOT NULL, project_id TEXT NOT NULL, column_key TEXT NOT NULL, title TEXT NOT NULL, detail TEXT NOT NULL, created_at TEXT NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS idx_board_items_project_id ON board_items (project_id)`,
 ];
@@ -250,6 +251,27 @@ export async function upsertProfile(input: Omit<ProfileData, 'handle'> & { handl
   };
   await db.prepare(`INSERT INTO profiles (user_id, name, handle, role, track, bio, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET name = excluded.name, handle = excluded.handle, role = excluded.role, track = excluded.track, bio = excluded.bio, updated_at = excluded.updated_at`).bind(user.id, profile.name, profile.handle, profile.role, profile.track, profile.bio, new Date().toISOString()).run();
   return profile;
+}
+
+export async function createRegistration(input: { channel: 'email' | 'telegram'; contact: string; name: string }, user: CurrentUser | null) {
+  const db = await ensureDatabase();
+  const registration = {
+    id: idFor('registration'),
+    channel: input.channel,
+    contact: input.contact.trim(),
+    name: input.name.trim(),
+    userId: user?.id || null,
+    createdAt: new Date().toISOString(),
+  };
+  await db.prepare('INSERT INTO registrations (id, channel, contact, name, user_id, created_at) VALUES (?, ?, ?, ?, ?, ?)').bind(
+    registration.id,
+    registration.channel,
+    registration.contact,
+    registration.name,
+    registration.userId,
+    registration.createdAt,
+  ).run();
+  return registration;
 }
 
 async function ownedProject(projectId: string, user: CurrentUser) {

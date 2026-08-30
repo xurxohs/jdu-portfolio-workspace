@@ -61,6 +61,15 @@ export const profiles = sqliteTable('profiles', {
   updatedAt: text('updated_at').notNull(),
 });
 
+export const registrations = sqliteTable('registrations', {
+  id: text('id').primaryKey(),
+  channel: text('channel').notNull(),
+  contact: text('contact').notNull(),
+  name: text('name').notNull(),
+  userId: text('user_id'),
+  createdAt: text('created_at').notNull(),
+});
+
 export const boardItems = sqliteTable('board_items', {
   id: text('id').primaryKey(),
   projectId: text('project_id').notNull(),

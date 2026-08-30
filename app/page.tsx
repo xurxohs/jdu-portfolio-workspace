@@ -3,6 +3,7 @@
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
 
 type Language = 'EN' | 'RU' | 'UZ' | 'JP';
+type RegistrationChannel = 'email' | 'telegram';
 type Accent = 'violet' | 'orange' | 'blue' | 'green' | 'pink';
 type View = 'overview' | 'projects' | 'categories' | 'review';
 type DetailTab = 'overview' | 'questions' | 'board';
@@ -255,6 +256,18 @@ const ui: Record<Language, Record<string, string>> = {
     profile: 'Profile',
     createProfile: 'Create profile',
     profileReady: 'Profile ready',
+    join: 'Join JDU',
+    joinTitle: 'Create your JDU account',
+    joinBody: 'Choose a contact method, then finish your public creator profile.',
+    emailTab: 'Email',
+    telegramTab: 'Telegram',
+    joinName: 'Your name',
+    emailAddress: 'Email address',
+    telegramUsername: 'Telegram username',
+    joinSubmit: 'Continue to profile',
+    joinNote: 'Your contact stays private and is used only for your account request.',
+    joinSuccess: 'Registration saved. Finish your public profile next.',
+    joinError: 'Registration could not be saved. Please try again.',
     editProfile: 'Edit profile',
     profileEditBody: 'Update your creator identity before you publish the next project to the JDU archive.',
     completeProfile: 'Complete profile',
@@ -379,6 +392,18 @@ const ui: Record<Language, Record<string, string>> = {
     profile: 'Профиль',
     createProfile: 'Создать профиль',
     profileReady: 'Профиль готов',
+    join: 'Регистрация',
+    joinTitle: 'Создай аккаунт JDU',
+    joinBody: 'Выбери способ связи, затем заполни публичный профиль автора.',
+    emailTab: 'Email',
+    telegramTab: 'Telegram',
+    joinName: 'Твоё имя',
+    emailAddress: 'Email',
+    telegramUsername: 'Имя пользователя в Telegram',
+    joinSubmit: 'Продолжить к профилю',
+    joinNote: 'Контакт скрыт и используется только для заявки на аккаунт.',
+    joinSuccess: 'Регистрация сохранена. Теперь заполни публичный профиль.',
+    joinError: 'Не удалось сохранить регистрацию. Попробуй ещё раз.',
     editProfile: 'Изменить профиль',
     profileEditBody: 'Обнови данные автора перед публикацией следующего проекта в архиве JDU.',
     completeProfile: 'Заполнить профиль',
@@ -503,6 +528,18 @@ const ui: Record<Language, Record<string, string>> = {
     profile: 'Profil',
     createProfile: 'Profil yaratish',
     profileReady: 'Profil tayyor',
+    join: 'Ro‘yxatdan o‘tish',
+    joinTitle: 'JDU akkauntini yarating',
+    joinBody: 'Aloqa usulini tanlang, keyin ochiq muallif profilini to‘ldiring.',
+    emailTab: 'Email',
+    telegramTab: 'Telegram',
+    joinName: 'Ismingiz',
+    emailAddress: 'Email manzil',
+    telegramUsername: 'Telegram foydalanuvchi nomi',
+    joinSubmit: 'Profilga davom etish',
+    joinNote: 'Kontakt yashirin qoladi va faqat akkaunt so‘rovi uchun ishlatiladi.',
+    joinSuccess: 'Ro‘yxatdan o‘tish saqlandi. Endi ochiq profilingizni to‘ldiring.',
+    joinError: 'Ro‘yxatdan o‘tishni saqlab bo‘lmadi. Qayta urinib ko‘ring.',
     editProfile: 'Profilni tahrirlash',
     profileEditBody: 'JDU arxiviga keyingi loyihani joylashdan oldin ijodkor maʼlumotlarini yangilang.',
     completeProfile: 'Profilni to‘ldirish',
@@ -627,6 +664,18 @@ const ui: Record<Language, Record<string, string>> = {
     profile: 'プロフィール',
     createProfile: 'プロフィールを作成',
     profileReady: 'プロフィール準備完了',
+    join: '参加する',
+    joinTitle: 'JDUアカウントを作成',
+    joinBody: '連絡方法を選び、公開プロフィールを完成させましょう。',
+    emailTab: 'Email',
+    telegramTab: 'Telegram',
+    joinName: '名前',
+    emailAddress: 'メールアドレス',
+    telegramUsername: 'Telegramユーザー名',
+    joinSubmit: 'プロフィールへ進む',
+    joinNote: '連絡先は非公開で、アカウント申請にのみ使用されます。',
+    joinSuccess: '登録を保存しました。次に公開プロフィールを完成してください。',
+    joinError: '登録を保存できませんでした。もう一度お試しください。',
     editProfile: 'プロフィールを編集',
     profileEditBody: '次の作品をJDUアーカイブに公開する前に、作者情報を更新しましょう。',
     completeProfile: 'プロフィールを完成',
@@ -857,6 +906,7 @@ function ProjectVisual({ project, large = false }: { project: Project; large?: b
 
 export default function Home() {
   const [language, setLanguage] = useState<Language>('EN');
+  const [languageOpen, setLanguageOpen] = useState(false);
   const [view, setView] = useState<View>('projects');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [projects, setProjects] = useState<Project[]>(initialProjects);
@@ -869,6 +919,11 @@ export default function Home() {
   const [showEdit, setShowEdit] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [showProfile, setShowProfile] = useState(false);
+  const [showJoin, setShowJoin] = useState(false);
+  const [registrationChannel, setRegistrationChannel] = useState<RegistrationChannel>('email');
+  const [registrationName, setRegistrationName] = useState('');
+  const [registrationContact, setRegistrationContact] = useState('');
+  const [registrationBusy, setRegistrationBusy] = useState(false);
   const [profile, setProfile] = useState<Profile>(initialProfile);
   const [profileDraft, setProfileDraft] = useState<Profile>(initialProfile);
   const [profilePhotoFile, setProfilePhotoFile] = useState<File | null>(null);
@@ -948,8 +1003,6 @@ export default function Home() {
   const creatorProject = projects.find((project) => project.owner === profile.name);
   const projectComplete = Boolean(creatorProject);
   const demoComplete = Boolean(creatorProject?.demoUrl);
-  const setupPercent = !profileComplete ? (profile.track.trim() || profile.bio.trim() ? 44 : 38) : !projectComplete ? 58 : !demoComplete ? 82 : 100;
-  const setupLabel = !profileComplete ? t.completeProfile : !projectComplete ? t.addFirstProject : !demoComplete ? t.demoLinks : t.profileReady;
   const canManageSelected = Boolean(selected && selected.owner === profile.name);
   const boardColumns: Array<{ key: BoardColumn; index: string; label: string }> = [
     { key: 'todo', index: '01', label: t.boardColumnTodo },
@@ -992,11 +1045,28 @@ export default function Home() {
     window.setTimeout(() => setToast(''), 3600);
   }
 
-  function openProfile() {
-    setProfileDraft(profile);
+  function openRegistration() {
+    setRegistrationChannel('email');
+    setRegistrationName(profile.name !== initialProfile.name ? profile.name : '');
+    setRegistrationContact('');
+    setShowJoin(true);
+  }
+
+  function closeRegistration() {
+    setShowJoin(false);
+    setRegistrationBusy(false);
+  }
+
+  function openProfile(prefillName?: string) {
+    setProfileDraft(prefillName ? { ...profile, name: prefillName } : profile);
     setProfilePhotoFile(null);
     setProfilePhotoPreview('');
     setShowProfile(true);
+  }
+
+  function openCreatorEntry() {
+    if (profileComplete) openProfile();
+    else openRegistration();
   }
 
   function closeProfile() {
@@ -1063,8 +1133,7 @@ export default function Home() {
 
   function openProjectComposer() {
     if (!profileComplete) {
-      openProfile();
-      notify(t.finishProfileFirst);
+      openRegistration();
       return;
     }
     setEditingProject(null);
@@ -1075,7 +1144,7 @@ export default function Home() {
 
   function continueSetup() {
     if (!profileComplete) {
-      openProfile();
+      openRegistration();
       return;
     }
     if (!projectComplete) {
@@ -1087,6 +1156,27 @@ export default function Home() {
       return;
     }
     navigate('review');
+  }
+
+  async function handleRegistration(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!registrationName.trim() || !registrationContact.trim() || registrationBusy) return;
+    setRegistrationBusy(true);
+    try {
+      const response = await fetch('/api/registrations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ channel: registrationChannel, name: registrationName.trim(), contact: registrationContact.trim() }),
+      });
+      if (!response.ok) throw new Error('Registration could not be saved');
+      const prefillName = registrationName.trim();
+      closeRegistration();
+      openProfile(prefillName);
+      notify(t.joinSuccess);
+    } catch {
+      setRegistrationBusy(false);
+      notify(t.joinError);
+    }
   }
 
   async function handleProfileSave(event: FormEvent<HTMLFormElement>) {
@@ -1338,7 +1428,7 @@ export default function Home() {
     <main className={`portfolio-site ${sidebarOpen ? 'is-nav-open' : ''}`} id="top">
       <header className="topbar">
         <a className="brand" href="#top" aria-label="JDU Portfolio home">
-          <span className="brand-mark">J</span>
+          <span className="brand-mark" aria-hidden="true"><b>J</b><i /></span>
           <span><b>JDU Portfolio</b><small>{c.brandLine}</small></span>
         </a>
         <nav className="desktop-nav" aria-label="Main navigation">
@@ -1347,25 +1437,17 @@ export default function Home() {
           <button className={view === 'review' ? 'is-active' : ''} type="button" onClick={() => navigate('review')}>{c.navHow}</button>
         </nav>
         <div className="topbar-actions">
-          <div className="language-carousel" role="group" aria-label="Language">
-            <span className="language-globe" aria-hidden="true">◎</span>
-            <div className="language-options">
-              {(['EN', 'RU', 'UZ', 'JP'] as Language[]).map((item) => (
-                <button
-                  className={language === item ? 'is-active' : ''}
-                  key={item}
-                  type="button"
-                  aria-pressed={language === item}
-                  onClick={() => setLanguage(item)}
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
+          <div className={`language-picker ${languageOpen ? 'is-open' : ''}`}>
+            <button className="language-trigger" type="button" aria-expanded={languageOpen} aria-haspopup="listbox" aria-label="Language" onClick={() => setLanguageOpen((current) => !current)}>
+              <span className="language-globe" aria-hidden="true">◎</span><b>{language}</b><span className="language-chevron" aria-hidden="true">⌄</span>
+            </button>
+            {languageOpen && <div className="language-menu" role="listbox" aria-label="Language">
+              {(['EN', 'RU', 'UZ', 'JP'] as Language[]).map((item) => <button className={language === item ? 'is-active' : ''} key={item} type="button" role="option" aria-selected={language === item} onClick={() => { setLanguage(item); setLanguageOpen(false); }}>{item}<span>{language === item ? '✓' : ''}</span></button>)}
+            </div>}
           </div>
-          <button className="profile-button" type="button" onClick={openProfile}>
+          <button className="profile-button" type="button" onClick={openCreatorEntry}>
             <span className="profile-avatar">{profile.avatarUrl ? <img src={profile.avatarUrl} alt="" /> : profileComplete ? profile.avatar : '+'}</span>
-            <span>{profileComplete ? c.myProfile : t.createProfile}</span>
+            <span>{profileComplete ? c.myProfile : t.join}</span>
           </button>
           <button className="primary-button topbar-publish" type="button" onClick={openProjectComposer}><span>＋</span>{c.publish}</button>
           <button className="mobile-nav-toggle" type="button" aria-label="Open navigation" aria-expanded={sidebarOpen} onClick={() => setSidebarOpen((current) => !current)}><span /><span /></button>
@@ -1376,7 +1458,7 @@ export default function Home() {
         <button type="button" onClick={() => navigate('projects')}>{c.navExplore}</button>
         <button type="button" onClick={() => navigate('categories')}>{c.navCategories}</button>
         <button type="button" onClick={() => navigate('review')}>{c.navHow}</button>
-        <button type="button" onClick={openProfile}>{profileComplete ? c.myProfile : t.createProfile}</button>
+        <button type="button" onClick={openCreatorEntry}>{profileComplete ? c.myProfile : t.join}</button>
         <button className="primary-button" type="button" onClick={openProjectComposer}>{c.publish}</button>
       </div>
 
@@ -1387,7 +1469,7 @@ export default function Home() {
           <p className="hero-body">{c.heroBody}</p>
           <div className="hero-actions">
             <button className="primary-button" type="button" onClick={() => navigate('projects')}>{c.heroPrimary}<span>↓</span></button>
-            <button className="secondary-button" type="button" onClick={openProfile}>{profileComplete ? c.myProfile : c.heroSecondary}</button>
+            <button className="secondary-button" type="button" onClick={openCreatorEntry}>{profileComplete ? c.myProfile : t.join}</button>
           </div>
           <div className="hero-metrics" aria-label="Portfolio statistics">
             <span><b>{publishedProjects.length}</b><small>{c.projectsLabel}</small></span>
@@ -1395,26 +1477,6 @@ export default function Home() {
             <span><b>4</b><small>{c.languagesLabel}</small></span>
           </div>
         </div>
-        <div className="hero-flow">
-          <div className="hero-flow-head"><p className="section-kicker"><span />{c.howKicker}</p><small>JDU / 2026</small></div>
-          <div className="hero-flow-list">
-            <article><b>01</b><div><strong>{c.stepOneTitle}</strong><small>{c.stepOneBody}</small></div><i>→</i></article>
-            <article><b>02</b><div><strong>{c.stepTwoTitle}</strong><small>{c.stepTwoBody}</small></div><i>→</i></article>
-            <article><b>03</b><div><strong>{c.stepThreeTitle}</strong><small>{c.stepThreeBody}</small></div><i>↗</i></article>
-          </div>
-          <div className="hero-flow-foot"><span>01</span><span className="is-current" /><span /><span /><span>03</span><small>{c.howTitle}</small></div>
-        </div>
-      </section>
-
-      <section className={`creator-banner ${profileComplete ? 'is-ready' : ''}`}>
-        <div className="creator-banner-icon">{profileComplete ? <span className="profile-avatar">{profile.avatarUrl ? <img src={profile.avatarUrl} alt="" /> : profile.avatar}</span> : <span>01</span>}</div>
-        <div className="creator-banner-copy">
-          <p className="section-kicker">{profileComplete ? t.profileReady : t.createProfile}</p>
-          <h2>{profileComplete ? c.creatorReady : c.creatorTitle}</h2>
-          <p>{profileComplete ? c.creatorReadyBody : c.creatorBody}</p>
-        </div>
-        <div className="creator-progress"><span><i style={{ width: `${setupPercent}%` }} /></span><small>{setupLabel} · {setupPercent}%</small></div>
-        <button className="dark-button" type="button" onClick={continueSetup}>{profileComplete ? c.publish : c.heroSecondary}<span>↗</span></button>
       </section>
 
       <section className="discover-section" id="library">
@@ -1468,7 +1530,7 @@ export default function Home() {
         <div className="feedback-grid">{reviews.slice(0, 3).map((item) => <button className="feedback-card" type="button" key={item.id} onClick={() => { const project = projects.find((candidate) => candidate.id === item.projectId); if (project) { selectProject(project); setDetailTab('questions'); } }}><span className="demo-label">DEMO</span><div className="feedback-card-top"><span className="feedback-avatar">{item.initials}</span><span className="feedback-meta"><b>{item.author}</b><small>{item.role}</small></span><span className="feedback-stars">{'★'.repeat(item.rating)}<i>{'★'.repeat(5 - item.rating)}</i></span></div><p>“{item.text}”</p><span className="feedback-project">{item.project}<span>↗</span></span></button>)}</div>
       </section>
 
-      <footer className="site-footer"><a className="brand" href="#top"><span className="brand-mark">J</span><span><b>JDU Portfolio</b><small>{c.footer}</small></span></a><div><button type="button" onClick={() => navigate('projects')}>{c.navExplore}</button><button type="button" onClick={() => navigate('categories')}>{c.navCategories}</button><button type="button" onClick={openProjectComposer}>{c.publish}</button></div><small>© 2026 JDU · Demo content is marked</small></footer>
+      <footer className="site-footer"><a className="brand" href="#top"><span className="brand-mark" aria-hidden="true"><b>J</b><i /></span><span><b>JDU Portfolio</b><small>{c.footer}</small></span></a><div><button type="button" onClick={() => navigate('projects')}>{c.navExplore}</button><button type="button" onClick={() => navigate('categories')}>{c.navCategories}</button><button type="button" onClick={openProjectComposer}>{c.publish}</button></div><small>© 2026 JDU · Demo content is marked</small></footer>
 
       {selected && <div className="drawer-backdrop" role="presentation" onClick={() => setSelected(null)}>
         <aside className="project-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" onClick={(event) => event.stopPropagation()}>
@@ -1487,6 +1549,8 @@ export default function Home() {
       {showAdd && <div className="drawer-backdrop" role="presentation" onClick={closeProjectComposer}><form className="add-drawer" role="dialog" aria-modal="true" aria-labelledby="add-drawer-title" onSubmit={handleAdd} onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">PUBLISH / 02</span><button className="close-button" type="button" aria-label={t.close} onClick={closeProjectComposer}>×</button></div><h2 id="add-drawer-title">{t.addTitle}</h2><p>{t.addBody}</p><div className="drawer-callout"><span className="profile-avatar">{profile.avatarUrl ? <img src={profile.avatarUrl} alt="" /> : profile.avatar}</span><p><b>{profile.name}</b><small>{profile.handle} · {profile.track || t.createProfile}</small></p></div><label>{t.title}<input name="title" required placeholder="JDU / ..." /></label><label>{t.owner}<input name="owner" required defaultValue={profile.name} placeholder="Your name" /></label><label>{t.category}<select name="category" defaultValue={profile.track || 'Culture + code'}><option>Learning systems</option><option>Community tools</option><option>Culture + code</option></select></label><label>{t.description}<textarea name="description" required placeholder="What does this project make possible?" rows={4} /></label><label>{t.demoUrl}<input name="demoUrl" type="url" placeholder="https://..." /></label><label>{t.projectStatus}<select name="status" defaultValue="Draft"><option value="Draft">{t.statusDraft}</option><option value="Published">{t.statusPublished}</option></select></label><label className="media-picker"><span className={`media-picker-preview ${projectCoverPreview ? 'has-image' : ''}`}>{projectCoverPreview ? <img src={projectCoverPreview} alt="" /> : <span className="media-picker-plus">＋</span>}</span><span className="media-picker-copy"><b>{t.coverImage}</b><small>{projectCoverFile?.name || t.coverHint}</small></span><span className="media-picker-arrow">↗</span><input name="cover" type="file" accept="image/avif,image/gif,image/jpeg,image/png,image/webp" onChange={handleProjectCoverChange} /></label><button className="primary-button" type="submit">{t.save}<span>↗</span></button></form></div>}
 
       {showEdit && editingProject && <div className="drawer-backdrop" role="presentation" onClick={closeProjectEditor}><form className="add-drawer" role="dialog" aria-modal="true" aria-labelledby="edit-drawer-title" onSubmit={handleEdit} onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">EDIT / {editingProject.id}</span><button className="close-button" type="button" aria-label={t.close} onClick={closeProjectEditor}>×</button></div><h2 id="edit-drawer-title">{t.edit}</h2><p>{t.editBody}</p><label>{t.title}<input name="title" required defaultValue={editingProject.title} /></label><label>{t.owner}<input name="owner" required defaultValue={editingProject.owner} /></label><label>{t.category}<select name="category" defaultValue={editingProject.category}><option>Learning systems</option><option>Community tools</option><option>Culture + code</option></select></label><label>{t.description}<textarea name="description" required defaultValue={editingProject.description} rows={4} /></label><label>{t.demoUrl}<input name="demoUrl" type="url" defaultValue={editingProject.demoUrl} placeholder="https://..." /></label><label>{t.projectStatus}<select name="status" defaultValue={editingProject.status}><option value="Draft">{t.statusDraft}</option><option value="Published">{t.statusPublished}</option></select></label><label className="media-picker"><span className={`media-picker-preview ${projectCoverPreview ? 'has-image' : ''}`}>{projectCoverPreview ? <img src={projectCoverPreview} alt="" /> : <span className="media-picker-plus">＋</span>}</span><span className="media-picker-copy"><b>{t.coverImage}</b><small>{projectCoverFile?.name || t.coverHint}</small></span><span className="media-picker-arrow">↗</span><input name="cover" type="file" accept="image/avif,image/gif,image/jpeg,image/png,image/webp" onChange={handleProjectCoverChange} /></label><button className="primary-button" type="submit">{t.save}<span>↗</span></button></form></div>}
+
+      {showJoin && <div className="drawer-backdrop" role="presentation" onClick={closeRegistration}><form className="join-drawer" role="dialog" aria-modal="true" aria-labelledby="join-drawer-title" onSubmit={handleRegistration} onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">JOIN JDU</span><button className="close-button" type="button" aria-label={t.close} onClick={closeRegistration}>×</button></div><div className="join-heading"><span className="join-mark" aria-hidden="true"><b>J</b><i /></span><div><h2 id="join-drawer-title">{t.joinTitle}</h2><p>{t.joinBody}</p></div></div><div className="join-methods" role="tablist" aria-label={t.join}><button className={registrationChannel === 'email' ? 'is-active' : ''} type="button" role="tab" aria-selected={registrationChannel === 'email'} onClick={() => { setRegistrationChannel('email'); setRegistrationContact(''); }}><span>✉</span>{t.emailTab}</button><button className={registrationChannel === 'telegram' ? 'is-active' : ''} type="button" role="tab" aria-selected={registrationChannel === 'telegram'} onClick={() => { setRegistrationChannel('telegram'); setRegistrationContact(''); }}><span>◉</span>{t.telegramTab}</button></div><div className="join-form"><label>{t.joinName}<input value={registrationName} onChange={(event) => setRegistrationName(event.target.value)} required autoComplete="name" /></label><label>{registrationChannel === 'email' ? t.emailAddress : t.telegramUsername}<input value={registrationContact} onChange={(event) => setRegistrationContact(event.target.value)} required type={registrationChannel === 'email' ? 'email' : 'text'} inputMode={registrationChannel === 'email' ? 'email' : 'text'} placeholder={registrationChannel === 'email' ? 'name@example.com' : '@username'} autoComplete={registrationChannel === 'email' ? 'email' : 'username'} /></label></div><p className="join-note"><span>i</span>{t.joinNote}</p><button className="primary-button join-submit" type="submit" disabled={registrationBusy}>{registrationBusy ? '...' : t.joinSubmit}<span>↗</span></button></form></div>}
 
       {showProfile && <div className="drawer-backdrop" role="presentation" onClick={closeProfile}><form className="profile-drawer" role="dialog" aria-modal="true" aria-labelledby="profile-drawer-title" onSubmit={handleProfileSave} onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">CREATOR PROFILE</span><button className="close-button" type="button" aria-label={t.close} onClick={closeProfile}>×</button></div><div className="profile-heading"><div><h2 id="profile-drawer-title">{profileComplete ? t.editProfile : t.profileTitle}</h2><p>{profileComplete ? t.profileEditBody : t.profileBody}</p></div><span className="profile-status"><i />{profileComplete ? t.profileReady : t.createProfile}</span></div><div className="profile-photo-section"><label className="profile-avatar-picker"><span className="profile-avatar-image">{profilePhotoPreview || profileDraft.avatarUrl ? <img src={profilePhotoPreview || profileDraft.avatarUrl} alt="" /> : profileDraft.avatar}</span><span className="profile-avatar-overlay"><b>＋</b><small>{t.choosePhoto}</small></span><input className="visually-hidden" name="avatar" type="file" accept="image/avif,image/gif,image/jpeg,image/png,image/webp" onChange={handleProfilePhotoChange} /></label><div className="profile-photo-copy"><b>{t.avatarPhoto}</b><span>{profilePhotoFile?.name || t.photoHint}</span><small>{profileDraft.handle}</small></div></div><div className="profile-form-grid"><label>{t.profileName}<input name="name" required defaultValue={profileDraft.name} placeholder="Your name" /></label><label>{t.profileRole}<input name="role" required defaultValue={profileDraft.role} placeholder="Student creator" /></label><label className="profile-field-wide">{t.profileTrack}<select name="track" required defaultValue={profileDraft.track}><option value="" disabled>Select a track</option><option>Learning systems</option><option>Community tools</option><option>Culture + code</option></select></label><label className="profile-field-wide">{t.profileBio}<textarea name="bio" required defaultValue={profileDraft.bio} placeholder="What do you make, research, or care about?" rows={4} /></label></div><div className="drawer-actions profile-actions"><button className="primary-button" type="submit">{t.saveProfile}<span>↗</span></button><button className="secondary-button" type="button" onClick={closeProfile}>{t.maybeLater}</button></div></form></div>}
 
