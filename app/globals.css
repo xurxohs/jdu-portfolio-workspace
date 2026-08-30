@@ -503,6 +503,30 @@ a { color: inherit; text-decoration: none; }
 .library-section { padding-top: 50px; }
 .section-heading { margin-bottom: 20px; }
 .portfolio-card .project-visual { height: 180px; }
+.categories-section { padding-top: 50px; }
+.category-grid { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.category-card {
+  background: var(--surface);
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  color: var(--text);
+  min-height: 190px;
+  padding: 18px;
+  text-align: left;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+  width: 100%;
+}
+.category-card:hover { background: var(--surface-2); border-color: rgba(163,107,255,.4); transform: translateY(-2px); }
+.category-card:active { transform: scale(.98); }
+.category-card-top { align-items: center; display: flex; justify-content: space-between; }
+.category-index { color: var(--muted-2); font-size: 9px; letter-spacing: .11em; }
+.category-signal { background: var(--violet); border-radius: 50%; box-shadow: 0 0 18px currentColor; height: 8px; width: 8px; }
+.category-card--orange .category-signal { background: var(--orange); }
+.category-card--blue .category-signal { background: var(--blue); }
+.category-card h3 { font-size: 20px; letter-spacing: -.055em; margin: 38px 0 8px; }
+.category-card p { color: var(--muted); font-size: 11px; margin: 0; }
+.category-card-footer { align-items: center; border-top: 1px solid var(--line-soft); color: var(--text); display: flex; font-size: 10px; justify-content: space-between; margin-top: 25px; padding-top: 12px; }
+.category-card-footer span { color: var(--pink); font-size: 14px; }
 .review-strip { margin-top: 64px; }
 .feedback-section { padding-top: 52px; }
 
@@ -603,6 +627,7 @@ a { color: inherit; text-decoration: none; }
   .welcome-card { padding: 21px; }
   .guide-card { grid-template-columns: 100px 1fr; }
   .guide-button { grid-column: 2; }
+  .category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .project-drawer, .add-drawer, .profile-drawer { padding: 22px 18px; }
 }
 
@@ -610,6 +635,7 @@ a { color: inherit; text-decoration: none; }
   .header-avatar { display: none; }
   .drawer-content h2, .add-drawer h2, .profile-drawer h2 { font-size: 29px; }
   .profile-steps span { font-size: 8px; padding: 7px 4px; }
+  .category-grid { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {

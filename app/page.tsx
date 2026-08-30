@@ -292,6 +292,8 @@ const ui: Record<Language, Record<string, string>> = {
     title: 'Project name',
     owner: 'Creator / team',
     category: 'Category',
+    categoryStats: 'Projects',
+    publishedStats: 'Published',
     description: 'Short description',
     demoUrl: 'Demo URL (optional)',
     save: 'Save project',
@@ -371,6 +373,8 @@ const ui: Record<Language, Record<string, string>> = {
     title: 'Название проекта',
     owner: 'Автор / команда',
     category: 'Категория',
+    categoryStats: 'Работ',
+    publishedStats: 'Опубликовано',
     description: 'Краткое описание',
     demoUrl: 'URL демо (необязательно)',
     save: 'Сохранить проект',
@@ -450,6 +454,8 @@ const ui: Record<Language, Record<string, string>> = {
     title: 'Loyiha nomi',
     owner: 'Muallif / jamoa',
     category: 'Kategoriya',
+    categoryStats: 'Loyihalar',
+    publishedStats: 'Nashr',
     description: 'Qisqa tavsif',
     demoUrl: 'Demo URL (ixtiyoriy)',
     save: 'Loyihani saqlash',
@@ -529,6 +535,8 @@ const ui: Record<Language, Record<string, string>> = {
     title: '作品名',
     owner: '作者 / チーム',
     category: 'カテゴリー',
+    categoryStats: '作品',
+    publishedStats: '公開済み',
     description: '短い説明',
     demoUrl: 'デモURL（任意）',
     save: '保存',
@@ -650,8 +658,15 @@ export default function Home() {
   function navigate(nextView: View) {
     setView(nextView);
     setSidebarOpen(false);
-    const target = nextView === 'review' ? 'review' : nextView === 'projects' ? 'library' : 'top';
+    const target = nextView === 'review' ? 'review' : nextView === 'projects' ? 'library' : nextView === 'categories' ? 'categories' : 'overview';
     window.setTimeout(() => document.getElementById(target)?.scrollIntoView({ behavior: 'smooth' }), 0);
+  }
+
+  function openCategory(nextCategory: string) {
+    setCategory(nextCategory);
+    setFilter('All');
+    setQuery('');
+    navigate('projects');
   }
 
   function notify(message: string) {
@@ -778,6 +793,11 @@ export default function Home() {
   const viewTitle = view === 'review' ? t.review : view === 'categories' ? t.categories : view === 'overview' ? t.overview : t.projects;
   const selectedQuestions = selected ? questions[selected.id] || [] : [];
   const averageRating = reviews.length ? (reviews.reduce((sum, item) => sum + item.rating, 0) / reviews.length).toFixed(1) : '—';
+  const categoryCards = categories.slice(1).map((item, index) => ({
+    name: item,
+    projects: projects.filter((project) => project.category === item),
+    accent: (['violet', 'orange', 'blue'] as Accent[])[index],
+  }));
 
   return (
     <main className={`dashboard ${sidebarCollapsed ? 'dashboard--collapsed' : ''} ${sidebarOpen ? 'dashboard--mobile-open' : ''}`}>
@@ -805,9 +825,11 @@ export default function Home() {
 
           <section className="library-section" id="library"><div className="section-heading"><div><p className="eyebrow">03 / LIBRARY</p><h2>{t.library}</h2><p>{t.libraryBody}</p></div><button className="outline-button" type="button" onClick={openProjectComposer}>+ {t.add}</button></div><div className="library-toolbar"><div className="status-tabs">{[['All', t.all], ['Published', t.published], ['Draft', t.drafts]].map(([key, label]) => <button className={filter === key ? 'is-active' : ''} key={key} type="button" onClick={() => setFilter(key)}>{label}</button>)}</div><div className="category-selects"><select aria-label={t.category} value={category} onChange={(event) => setCategory(event.target.value)}>{categories.map((item) => <option key={item} value={item}>{item === 'All' ? t.all : item}</option>)}</select><label className="search-input"><span>⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t.search} aria-label={t.search} /></label></div></div><div className="project-grid">{filteredProjects.map((project) => <article className="portfolio-card" key={project.id}><button className="portfolio-card-main" type="button" onClick={() => selectProject(project)}><ProjectVisual project={project} /><div className="portfolio-card-body"><div className="portfolio-card-title"><h3>{project.title}</h3><span>↗</span></div><p>{project.description}</p></div></button><div className="portfolio-card-footer"><span>{project.category}</span><span className={`status-pill status-pill--${project.status.toLowerCase()}`}>{project.status}</span></div></article>)}</div>{filteredProjects.length === 0 && <div className="empty-library">No projects match this filter.</div>}</section>
 
-          <section className="review-strip" id="review"><div><p className="eyebrow">04 / READY TO SHARE</p><h2>Every project deserves a clear story.</h2><p>Before the report meeting, make sure the viewer can understand the problem, the solution, and where to try it.</p></div><div className="review-items"><span><b>01</b> Explain the problem</span><span><b>02</b> Show the flow</span><span><b>03</b> Link the demo</span></div></section>
+          <section className="categories-section" id="categories"><div className="section-heading"><div><p className="eyebrow">04 / CATEGORIES</p><h2>{t.categories}</h2><p>{t.libraryBody}</p></div><button className="outline-button" type="button" onClick={() => navigate('projects')}>{t.projects} <span>↗</span></button></div><div className="category-grid">{categoryCards.map((item, index) => { const publishedCount = item.projects.filter((project) => project.status === 'Published').length; return <button className={`category-card category-card--${item.accent}`} key={item.name} type="button" onClick={() => openCategory(item.name)}><div className="category-card-top"><span className="category-index">{String(index + 1).padStart(2, '0')} / JDU</span><span className="category-signal" aria-hidden="true" /></div><h3>{item.name}</h3><p>{t.categoryStats}: {item.projects.length} · {t.publishedStats}: {publishedCount}</p><span className="category-card-footer">{t.open} <span>↗</span></span></button>; })}</div></section>
 
-          <section className="feedback-section" id="feedback"><div className="section-heading feedback-heading"><div><p className="eyebrow">05 / COMMUNITY PULSE</p><h2>{t.feedback}</h2><p>{t.feedbackBody}</p></div><div className="feedback-score"><b>{averageRating}</b><span>★★★★★</span><small>{t.averageScore}</small></div></div><div className="feedback-grid">{reviews.map((item) => <button className="feedback-card" type="button" key={item.id} onClick={() => { const project = projects.find((candidate) => candidate.id === item.projectId); if (project) { selectProject(project); setDetailTab('questions'); } }}><div className="feedback-card-top"><span className="feedback-avatar">{item.initials}</span><span className="feedback-meta"><b>{item.author}</b><small>{item.role}</small></span><span className="feedback-stars">{'★'.repeat(item.rating)}<i>{'★'.repeat(5 - item.rating)}</i></span></div><p>“{item.text}”</p><span className="feedback-project">{item.project}<span>↗</span></span></button>)}</div></section>
+          <section className="review-strip" id="review"><div><p className="eyebrow">05 / READY TO SHARE</p><h2>Every project deserves a clear story.</h2><p>Before the report meeting, make sure the viewer can understand the problem, the solution, and where to try it.</p></div><div className="review-items"><span><b>01</b> Explain the problem</span><span><b>02</b> Show the flow</span><span><b>03</b> Link the demo</span></div></section>
+
+          <section className="feedback-section" id="feedback"><div className="section-heading feedback-heading"><div><p className="eyebrow">06 / COMMUNITY PULSE</p><h2>{t.feedback}</h2><p>{t.feedbackBody}</p></div><div className="feedback-score"><b>{averageRating}</b><span>★★★★★</span><small>{t.averageScore}</small></div></div><div className="feedback-grid">{reviews.map((item) => <button className="feedback-card" type="button" key={item.id} onClick={() => { const project = projects.find((candidate) => candidate.id === item.projectId); if (project) { selectProject(project); setDetailTab('questions'); } }}><div className="feedback-card-top"><span className="feedback-avatar">{item.initials}</span><span className="feedback-meta"><b>{item.author}</b><small>{item.role}</small></span><span className="feedback-stars">{'★'.repeat(item.rating)}<i>{'★'.repeat(5 - item.rating)}</i></span></div><p>“{item.text}”</p><span className="feedback-project">{item.project}<span>↗</span></span></button>)}</div></section>
         </div>
       </section>
 
