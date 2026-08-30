@@ -744,6 +744,80 @@ const ui: Record<Language, Record<string, string>> = {
 
 const categories = ['All', 'Learning systems', 'Community tools', 'Culture + code'];
 
+const productCopy: Record<Language, Record<string, string>> = {
+  EN: {
+    brandLine: 'Student work, in one place', navExplore: 'Explore', navCategories: 'Categories', navHow: 'How it works',
+    heroKicker: 'The student portfolio of JDU', heroTitle: 'Great student work deserves to be seen.',
+    heroBody: 'Discover projects made at JDU, meet their creators, ask questions, and publish your own work in minutes.',
+    heroPrimary: 'Explore projects', heroSecondary: 'Create your profile', featured: 'Featured project',
+    discoverKicker: 'Discover', discoverTitle: 'Projects from the JDU community',
+    discoverBody: 'Real student ideas across education, community, culture and technology.', searchPlaceholder: 'Search projects, people or topics…',
+    allProjects: 'All projects', noMatch: 'No projects match your search yet.', creatorTitle: 'Ready to share your work?',
+    creatorBody: 'Create a short creator profile, add a cover and publish your first project.', creatorReady: 'Your creator profile is ready',
+    creatorReadyBody: 'Your next project can be added in a few minutes.', howKicker: 'For creators', howTitle: 'From student work to public portfolio',
+    howBody: 'A clear three-step path. No dashboard maze and no complicated setup.', stepOneTitle: 'Create a profile', stepOneBody: 'Add your name, track, bio and photo.',
+    stepTwoTitle: 'Publish a project', stepTwoBody: 'Show the problem, solution, visuals and demo link.', stepThreeTitle: 'Join the conversation',
+    stepThreeBody: 'Receive questions and feedback from students and mentors.', communityKicker: 'Community', communityTitle: 'Feedback that helps projects grow',
+    communityBody: 'Demo reviews and questions are clearly marked as sample content.', footer: 'A public archive of student-made work at JDU.',
+    myProfile: 'My profile', publish: 'Publish project', projectsLabel: 'projects', creatorsLabel: 'creators', languagesLabel: 'languages',
+  },
+  RU: {
+    brandLine: 'Студенческие работы в одном месте', navExplore: 'Проекты', navCategories: 'Категории', navHow: 'Как это работает',
+    heroKicker: 'Студенческое портфолио JDU', heroTitle: 'Сильные студенческие проекты должны быть заметны.',
+    heroBody: 'Смотри проекты студентов JDU, находи авторов, задавай вопросы и публикуй собственную работу за несколько минут.',
+    heroPrimary: 'Смотреть проекты', heroSecondary: 'Создать профиль', featured: 'Проект недели',
+    discoverKicker: 'Каталог', discoverTitle: 'Проекты сообщества JDU',
+    discoverBody: 'Идеи студентов в образовании, культуре, технологиях и общественных сервисах.', searchPlaceholder: 'Найти проект, автора или тему…',
+    allProjects: 'Все проекты', noMatch: 'По этому запросу проектов пока нет.', creatorTitle: 'Готов показать свою работу?',
+    creatorBody: 'Создай короткий профиль автора, добавь обложку и опубликуй первый проект.', creatorReady: 'Профиль автора готов',
+    creatorReadyBody: 'Теперь можно добавить следующий проект за несколько минут.', howKicker: 'Для авторов', howTitle: 'От учебной работы до публичного портфолио',
+    howBody: 'Понятный путь из трёх шагов — без сложной панели и лишних настроек.', stepOneTitle: 'Создай профиль', stepOneBody: 'Добавь имя, направление, описание и фото.',
+    stepTwoTitle: 'Опубликуй проект', stepTwoBody: 'Покажи задачу, решение, визуалы и ссылку на демо.', stepThreeTitle: 'Получи обратную связь',
+    stepThreeBody: 'Отвечай на вопросы студентов и менторов.', communityKicker: 'Сообщество', communityTitle: 'Отзывы, которые помогают проектам расти',
+    communityBody: 'Демонстрационные отзывы и вопросы отмечены как пример контента.', footer: 'Публичный архив студенческих проектов JDU.',
+    myProfile: 'Мой профиль', publish: 'Добавить проект', projectsLabel: 'проектов', creatorsLabel: 'авторов', languagesLabel: 'языка',
+  },
+  UZ: {
+    brandLine: 'Talabalar ishlari bir joyda', navExplore: 'Loyihalar', navCategories: 'Toifalar', navHow: 'Qanday ishlaydi',
+    heroKicker: 'JDU talabalar portfoliosi', heroTitle: 'Kuchli talaba loyihalari ko‘rinishi kerak.',
+    heroBody: 'JDU loyihalarini ko‘ring, mualliflar bilan tanishing, savol bering va o‘z ishingizni bir necha daqiqada joylang.',
+    heroPrimary: 'Loyihalarni ko‘rish', heroSecondary: 'Profil yaratish', featured: 'Tanlangan loyiha',
+    discoverKicker: 'Katalog', discoverTitle: 'JDU hamjamiyati loyihalari',
+    discoverBody: 'Ta’lim, madaniyat, texnologiya va hamjamiyat uchun yaratilgan talaba g‘oyalari.', searchPlaceholder: 'Loyiha, muallif yoki mavzu qidiring…',
+    allProjects: 'Barcha loyihalar', noMatch: 'Bu so‘rov bo‘yicha loyiha topilmadi.', creatorTitle: 'Ishingizni ulashishga tayyormisiz?',
+    creatorBody: 'Muallif profilini yarating, muqova qo‘shing va birinchi loyihani e’lon qiling.', creatorReady: 'Muallif profilingiz tayyor',
+    creatorReadyBody: 'Keyingi loyihani bir necha daqiqada qo‘shishingiz mumkin.', howKicker: 'Mualliflar uchun', howTitle: 'O‘quv ishidan ochiq portfoliogacha',
+    howBody: 'Ortiqcha sozlamalarsiz uchta aniq qadam.', stepOneTitle: 'Profil yarating', stepOneBody: 'Ism, yo‘nalish, bio va rasm qo‘shing.',
+    stepTwoTitle: 'Loyihani joylang', stepTwoBody: 'Muammo, yechim, tasvir va demo havolasini ko‘rsating.', stepThreeTitle: 'Fikr oling',
+    stepThreeBody: 'Talabalar va mentorlardan savol hamda izohlar oling.', communityKicker: 'Hamjamiyat', communityTitle: 'Loyihani rivojlantiradigan fikrlar',
+    communityBody: 'Namuna savollar va izohlar demo kontent sifatida ko‘rsatiladi.', footer: 'JDU talabalari yaratgan loyihalarning ochiq arxivi.',
+    myProfile: 'Mening profilim', publish: 'Loyiha qo‘shish', projectsLabel: 'loyiha', creatorsLabel: 'muallif', languagesLabel: 'til',
+  },
+  JP: {
+    brandLine: '学生作品をひとつの場所に', navExplore: '作品を見る', navCategories: 'カテゴリー', navHow: '使い方',
+    heroKicker: 'JDU 学生ポートフォリオ', heroTitle: '優れた学生作品を、もっと多くの人へ。',
+    heroBody: 'JDUの作品を見つけ、作者を知り、質問し、自分の作品も数分で公開できます。',
+    heroPrimary: '作品を見る', heroSecondary: 'プロフィールを作成', featured: '注目の作品',
+    discoverKicker: '作品一覧', discoverTitle: 'JDUコミュニティのプロジェクト',
+    discoverBody: '教育、文化、テクノロジー、コミュニティから生まれた学生のアイデア。', searchPlaceholder: '作品、作者、テーマを検索…',
+    allProjects: 'すべての作品', noMatch: '該当する作品はまだありません。', creatorTitle: '作品を公開しませんか？',
+    creatorBody: '作者プロフィールを作成し、カバー画像を追加して最初の作品を公開しましょう。', creatorReady: '作者プロフィールは完成しています',
+    creatorReadyBody: '次の作品を数分で追加できます。', howKicker: '作者向け', howTitle: '授業の成果を公開ポートフォリオへ',
+    howBody: '迷わない、シンプルな3ステップです。', stepOneTitle: 'プロフィール作成', stepOneBody: '名前、分野、自己紹介、写真を追加。',
+    stepTwoTitle: '作品を公開', stepTwoBody: '課題、解決策、ビジュアル、デモを紹介。', stepThreeTitle: 'フィードバック',
+    stepThreeBody: '学生やメンターから質問と感想を受け取る。', communityKicker: 'コミュニティ', communityTitle: '作品を成長させるフィードバック',
+    communityBody: 'サンプルのレビューと質問はデモコンテンツとして表示されます。', footer: 'JDU学生作品の公開アーカイブ。',
+    myProfile: 'プロフィール', publish: '作品を追加', projectsLabel: '作品', creatorsLabel: '作者', languagesLabel: '言語',
+  },
+};
+
+const projectCoverFallbacks: Record<string, string> = {
+  '01': '/projects/nihongo-talk-trainer.jpg',
+  '02': '/projects/osh-table.jpg',
+  '03': '/projects/jdu-open-archive.jpg',
+  '04': '/projects/quiet-city-index.jpg',
+};
+
 const clientImageTypes = new Set(['image/avif', 'image/gif', 'image/jpeg', 'image/png', 'image/webp']);
 const clientMaxImageBytes = 5 * 1024 * 1024;
 
@@ -768,31 +842,25 @@ async function uploadMedia(file: File, kind: 'profile' | 'project', projectId?: 
 }
 
 function ProjectVisual({ project, large = false }: { project: Project; large?: boolean }) {
+  const fallbackCover = projectCoverFallbacks[project.id];
+  const requestedCover = project.coverUrl || fallbackCover;
   return (
-    <div className={`project-visual project-visual--${project.accent} ${large ? 'project-visual--large' : ''} ${project.coverUrl ? 'project-visual--has-cover' : ''}`}>
-      {project.coverUrl && <img className="project-cover-image" src={project.coverUrl} alt="" onError={(event) => { event.currentTarget.hidden = true; }} />}
-      <div className="visual-grid" />
-      <div className="visual-window">
-        <div className="visual-window-top"><span /><span /><span /><b>{project.id} / JDU</b></div>
-        <div className="visual-window-body"><div className="visual-sidebar"><i /><i /><i /><i /></div><div className="visual-canvas"><span className="visual-chip">{project.category}</span><strong>{project.title.split(' ')[0]}</strong><em>{project.id}</em><div className="visual-bars"><i /><i /><i /></div></div></div>
-      </div>
-      <span className="visual-orb" />
-      <span className="visual-label">JDU / {project.id}</span>
+    <div className={`project-visual project-visual--${project.accent} ${large ? 'project-visual--large' : ''}`}>
+      {requestedCover ? <img className="project-cover-image" src={requestedCover} alt={`${project.title} project cover`} onError={(event) => {
+        if (fallbackCover && event.currentTarget.getAttribute('src') !== fallbackCover) event.currentTarget.src = fallbackCover;
+        else event.currentTarget.hidden = true;
+      }} /> : <div className="project-cover-fallback"><span>JDU</span><b>{project.title}</b></div>}
+      <span className="visual-label">{project.category}</span>
     </div>
   );
-}
-
-function NavIcon({ type }: { type: string }) {
-  return <span aria-hidden="true" className={`nav-icon nav-icon--${type}`}><i /><i /><i /></span>;
 }
 
 export default function Home() {
   const [language, setLanguage] = useState<Language>('EN');
   const [view, setView] = useState<View>('projects');
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [projects, setProjects] = useState<Project[]>(initialProjects);
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState('Published');
   const [category, setCategory] = useState('All');
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<Project | null>(null);
@@ -819,6 +887,7 @@ export default function Home() {
   const [reviewRating, setReviewRating] = useState('5');
   const [toast, setToast] = useState('');
   const t = ui[language];
+  const c = productCopy[language];
   const featured = projects[0];
 
   useEffect(() => {
@@ -1256,9 +1325,10 @@ export default function Home() {
     }
   }
 
-  const viewTitle = view === 'review' ? t.review : view === 'categories' ? t.categories : view === 'overview' ? t.overview : t.projects;
   const selectedQuestions = selected ? questions[selected.id] || [] : [];
   const averageRating = reviews.length ? (reviews.reduce((sum, item) => sum + item.rating, 0) / reviews.length).toFixed(1) : '—';
+  const publishedProjects = projects.filter((project) => project.status === 'Published');
+  const creatorCount = new Set(projects.map((project) => project.owner)).size;
   const categoryCards = categories.slice(1).map((item, index) => ({
     name: item,
     projects: projects.filter((project) => project.category === item),
@@ -1266,45 +1336,142 @@ export default function Home() {
   }));
 
   return (
-    <main className={`dashboard ${sidebarCollapsed ? 'dashboard--collapsed' : ''} ${sidebarOpen ? 'dashboard--mobile-open' : ''}`}>
-      <button className="mobile-scrim" type="button" aria-label="Close menu" onClick={() => setSidebarOpen(false)} />
-      <aside className="sidebar">
-        <div className="sidebar-header"><a className="workspace-logo" href="#top"><span className="workspace-logo-mark">J</span><span className="sidebar-copy">JDU <b>Portfolio</b></span></a><button className="sidebar-close" type="button" aria-label="Close menu" onClick={() => setSidebarOpen(false)}>×</button></div>
-        {profileComplete ? <div className="profile-context" aria-label={t.profileTrack}><span>TRACK / JDU</span><b>{profile.track}</b></div> : <button className="profile-row profile-row--setup" type="button" onClick={openProfile} aria-label={t.createProfile} title={t.createProfile}><span className="profile-avatar profile-avatar--setup">+</span><span className="sidebar-copy"><b>{t.createProfile}</b><small><i className="is-pending" /> {t.completeProfile}</small></span><span className="profile-chevron" aria-hidden="true">↗</span></button>}
-        <nav className="sidebar-nav" aria-label="Portfolio navigation">
-          {([['overview', t.overview, 'home'], ['projects', t.projects, 'projects'], ['categories', t.categories, 'categories'], ['review', t.review, 'review']] as [View, string, string][]).map(([key, label, icon]) => <button className={view === key ? 'is-active' : ''} key={key} type="button" onClick={() => navigate(key)}><NavIcon type={icon} /><span className="sidebar-copy">{label}</span>{key === 'projects' && <span className="nav-count">{projects.length}</span>}</button>)}
+    <main className={`portfolio-site ${sidebarOpen ? 'is-nav-open' : ''}`} id="top">
+      <header className="topbar">
+        <a className="brand" href="#top" aria-label="JDU Portfolio home">
+          <span className="brand-mark">J</span>
+          <span><b>JDU Portfolio</b><small>{c.brandLine}</small></span>
+        </a>
+        <nav className="desktop-nav" aria-label="Main navigation">
+          <button className={view === 'projects' ? 'is-active' : ''} type="button" onClick={() => navigate('projects')}>{c.navExplore}</button>
+          <button className={view === 'categories' ? 'is-active' : ''} type="button" onClick={() => navigate('categories')}>{c.navCategories}</button>
+          <button className={view === 'review' ? 'is-active' : ''} type="button" onClick={() => navigate('review')}>{c.navHow}</button>
         </nav>
-        <div className="sidebar-bottom sidebar-copy"><div className="sidebar-rule" /><p>{profileComplete ? 'PUBLISHING PATH' : 'SETUP / 03'}</p><div className="mini-progress"><span style={{ width: `${setupPercent}%` }} /></div><div className="mini-progress-row"><span>{setupLabel}</span><b>{setupPercent}%</b></div><button type="button" onClick={continueSetup}>{t.continueSetup} <span>↗</span></button></div>
-        <button className="logout-button" type="button" onClick={() => notify('This is a portfolio demo workspace.') }><NavIcon type="exit" /><span className="sidebar-copy">Workspace settings</span></button>
-      </aside>
+        <div className="topbar-actions">
+          <label className="language-select"><span aria-hidden="true">◎</span><select aria-label="Language" value={language} onChange={(event) => setLanguage(event.target.value as Language)}>{(['EN', 'RU', 'UZ', 'JP'] as Language[]).map((item) => <option key={item}>{item}</option>)}</select></label>
+          <button className="profile-button" type="button" onClick={openProfile}>
+            <span className="profile-avatar">{profile.avatarUrl ? <img src={profile.avatarUrl} alt="" /> : profileComplete ? profile.avatar : '+'}</span>
+            <span>{profileComplete ? c.myProfile : t.createProfile}</span>
+          </button>
+          <button className="primary-button topbar-publish" type="button" onClick={openProjectComposer}><span>＋</span>{c.publish}</button>
+          <button className="mobile-nav-toggle" type="button" aria-label="Open navigation" aria-expanded={sidebarOpen} onClick={() => setSidebarOpen((current) => !current)}><span /><span /></button>
+        </div>
+      </header>
 
-      <section className="main-panel" id="top">
-        <header className="main-header"><div className="header-left"><button className="sidebar-toggle" type="button" aria-label="Toggle sidebar" onClick={() => { setSidebarCollapsed((current) => !current); setSidebarOpen(true); }}><span /><span /><span /></button><div><p>{t.workspace}</p><h1>{viewTitle}</h1></div></div><div className="header-actions"><div className="language-switcher" aria-label="Language"><span className="language-label">LANG</span>{(['EN', 'RU', 'UZ', 'JP'] as Language[]).map((item) => <button className={language === item ? 'is-active' : ''} key={item} type="button" onClick={() => setLanguage(item)} aria-pressed={language === item} title={item}>{item}</button>)}</div><button className="header-add" type="button" onClick={openProjectComposer}><span>+</span>{t.add}</button><button className="header-avatar" type="button" onClick={openProfile} aria-label={profileComplete ? t.editProfile : t.createProfile} title={profileComplete ? t.editProfile : t.createProfile}>{profile.avatarUrl ? <img src={profile.avatarUrl} alt="" /> : profile.avatar}</button></div></header>
+      <div className="mobile-nav">
+        <button type="button" onClick={() => navigate('projects')}>{c.navExplore}</button>
+        <button type="button" onClick={() => navigate('categories')}>{c.navCategories}</button>
+        <button type="button" onClick={() => navigate('review')}>{c.navHow}</button>
+        <button type="button" onClick={openProfile}>{profileComplete ? c.myProfile : t.createProfile}</button>
+        <button className="primary-button" type="button" onClick={openProjectComposer}>{c.publish}</button>
+      </div>
 
-        <div className="content-area">
-          <section className="hero-grid" id="overview">
-            <article className="welcome-card"><div className="welcome-copy"><p className="eyebrow">JDU / PORTFOLIO 2026</p><h2>{t.featuredTitle}</h2><p>{t.featuredBody}</p><div className="welcome-stats"><span><b>{projects.length.toString().padStart(2, '0')}</b><small>PROJECTS</small></span><span><b>04</b><small>LANGUAGES</small></span><span><b>01</b><small>ARCHIVE</small></span></div><button className="primary-button" type="button" onClick={() => selectProject(featured)}>{t.openProject}<span>↗</span></button></div><div className="welcome-visual"><ProjectVisual project={featured} large /><div className="visual-caption"><span>{t.featured}</span><b>{featured.title}</b></div></div></article>
-            <aside className="readiness-card"><div className="card-heading"><div><p className="eyebrow">02 / SETUP PATH</p><h2>{t.readiness}</h2></div><span className="more-button">•••</span></div><div className="readiness-ring"><span><b>{setupPercent}</b><small>% ready</small></span></div><p className="readiness-copy">{t.readinessBody}</p><ul className="checklist"><li className={profileComplete ? 'done' : ''}><span>{profileComplete ? '✓' : '01'}</span> {profileComplete ? t.profileReady : t.createProfile}</li><li className={projectComplete ? 'done' : ''}><span>{projectComplete ? '✓' : '02'}</span> {projectComplete ? t.projectLibrary : t.addFirstProject}</li><li className="done"><span>✓</span> {t.languageSet}</li><li className="done"><span>✓</span> {t.communityTools}</li><li className={demoComplete ? 'done' : ''}><span>{demoComplete ? '✓' : '03'}</span> {demoComplete ? t.demoReady : t.demoLinks}</li></ul><button className="soft-button" type="button" onClick={continueSetup}>{t.continueSetup} <span>↗</span></button></aside>
-          </section>
+      <section className="portfolio-hero" id="overview">
+        <div className="hero-copy">
+          <p className="section-kicker"><span />{c.heroKicker}</p>
+          <h1>{c.heroTitle}</h1>
+          <p className="hero-body">{c.heroBody}</p>
+          <div className="hero-actions">
+            <button className="primary-button" type="button" onClick={() => navigate('projects')}>{c.heroPrimary}<span>↓</span></button>
+            <button className="secondary-button" type="button" onClick={openProfile}>{profileComplete ? c.myProfile : c.heroSecondary}</button>
+          </div>
+          <div className="hero-metrics" aria-label="Portfolio statistics">
+            <span><b>{publishedProjects.length}</b><small>{c.projectsLabel}</small></span>
+            <span><b>{creatorCount}</b><small>{c.creatorsLabel}</small></span>
+            <span><b>4</b><small>{c.languagesLabel}</small></span>
+          </div>
+        </div>
+        <button className="featured-project" type="button" onClick={() => selectProject(featured)}>
+          <ProjectVisual project={featured} large />
+          <span className="featured-badge">✦ {c.featured}</span>
+          <span className="featured-info"><span><small>{featured.category}</small><b>{featured.title}</b><i>{t.by} {featured.owner}</i></span><strong>↗</strong></span>
+        </button>
+      </section>
 
-          <section className="guide-card"><div className="guide-preview"><span className="guide-icon">JDU</span><span className="guide-play">▶</span></div><div className="guide-copy"><p className="eyebrow">START HERE · 03 MIN</p><h2>{t.guide}</h2><p>{t.guideBody}</p></div><button className="guide-button" type="button" onClick={() => notify(t.guideMessage)}>{t.readGuide}<span>↗</span></button></section>
+      <section className={`creator-banner ${profileComplete ? 'is-ready' : ''}`}>
+        <div className="creator-banner-icon">{profileComplete ? <span className="profile-avatar">{profile.avatarUrl ? <img src={profile.avatarUrl} alt="" /> : profile.avatar}</span> : <span>01</span>}</div>
+        <div className="creator-banner-copy">
+          <p className="section-kicker">{profileComplete ? t.profileReady : t.createProfile}</p>
+          <h2>{profileComplete ? c.creatorReady : c.creatorTitle}</h2>
+          <p>{profileComplete ? c.creatorReadyBody : c.creatorBody}</p>
+        </div>
+        <div className="creator-progress"><span><i style={{ width: `${setupPercent}%` }} /></span><small>{setupLabel} · {setupPercent}%</small></div>
+        <button className="dark-button" type="button" onClick={continueSetup}>{profileComplete ? c.publish : c.heroSecondary}<span>↗</span></button>
+      </section>
 
-          <section className="library-section" id="library"><div className="section-heading"><div><p className="eyebrow">03 / LIBRARY</p><h2>{t.library}</h2><p>{t.libraryBody}</p></div><button className="outline-button" type="button" onClick={openProjectComposer}>+ {t.add}</button></div><div className="library-toolbar"><div className="status-tabs">{[['All', t.all], ['Published', t.published], ['Draft', t.drafts]].map(([key, label]) => <button className={filter === key ? 'is-active' : ''} key={key} type="button" onClick={() => setFilter(key)}>{label}</button>)}</div><div className="category-selects"><select aria-label={t.category} value={category} onChange={(event) => setCategory(event.target.value)}>{categories.map((item) => <option key={item} value={item}>{item === 'All' ? t.all : item}</option>)}</select><label className="search-input"><span>⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t.search} aria-label={t.search} /></label></div></div><div className="project-grid">{filteredProjects.map((project) => <article className="portfolio-card" key={project.id}><button className="portfolio-card-main" type="button" onClick={() => selectProject(project)}><ProjectVisual project={project} /><div className="portfolio-card-body"><div className="portfolio-card-title"><h3>{project.title}</h3><span>↗</span></div><p>{project.description}</p></div></button><div className="portfolio-card-footer"><span>{project.category}</span><span className={`status-pill status-pill--${project.status.toLowerCase()}`}>{project.status === 'Published' ? t.statusPublished : t.statusDraft}</span></div></article>)}</div>{filteredProjects.length === 0 && <div className="empty-library">No projects match this filter.</div>}</section>
+      <section className="discover-section" id="library">
+        <div className="section-heading">
+          <div><p className="section-kicker"><span />{c.discoverKicker}</p><h2>{c.discoverTitle}</h2><p>{c.discoverBody}</p></div>
+          <button className="secondary-button" type="button" onClick={openProjectComposer}>＋ {c.publish}</button>
+        </div>
+        <div className="explore-toolbar">
+          <label className="search-input"><span aria-hidden="true">⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={c.searchPlaceholder} aria-label={c.searchPlaceholder} /></label>
+          <select className="category-select" aria-label={t.category} value={category} onChange={(event) => setCategory(event.target.value)}>{categories.map((item) => <option key={item} value={item}>{item === 'All' ? c.allProjects : item}</option>)}</select>
+          <div className="status-tabs">{[['Published', t.published], ['All', t.all], ['Draft', t.drafts]].map(([key, label]) => <button className={filter === key ? 'is-active' : ''} key={key} type="button" onClick={() => setFilter(key)}>{label}</button>)}</div>
+        </div>
+        <div className="project-grid">
+          {filteredProjects.map((project) => <article className="portfolio-card" key={project.id}>
+            <button className="portfolio-card-main" type="button" onClick={() => selectProject(project)}>
+              <ProjectVisual project={project} />
+              <div className="portfolio-card-body">
+                <p className="card-meta"><span>{project.category}</span><span>{project.updated}</span></p>
+                <div className="portfolio-card-title"><h3>{project.title}</h3><span>↗</span></div>
+                <p>{project.description}</p>
+                <div className="tag-row">{project.tags.slice(0, 3).map((tag) => <span key={tag}>{tag}</span>)}</div>
+              </div>
+            </button>
+            <div className="portfolio-card-footer"><span className="card-author"><i>{project.owner.split(/\s+/).map((part) => part[0]).join('').slice(0, 2)}</i>{project.owner}</span><span className={`status-pill status-pill--${project.status.toLowerCase()}`}>{project.status === 'Published' ? t.statusPublished : t.statusDraft}</span></div>
+          </article>)}
+        </div>
+        {filteredProjects.length === 0 && <div className="empty-library">{c.noMatch}</div>}
+      </section>
 
-          <section className="categories-section" id="categories"><div className="section-heading"><div><p className="eyebrow">04 / CATEGORIES</p><h2>{t.categories}</h2><p>{t.libraryBody}</p></div><button className="outline-button" type="button" onClick={() => navigate('projects')}>{t.projects} <span>↗</span></button></div><div className="category-grid">{categoryCards.map((item, index) => { const publishedCount = item.projects.filter((project) => project.status === 'Published').length; return <button className={`category-card category-card--${item.accent}`} key={item.name} type="button" onClick={() => openCategory(item.name)}><div className="category-card-top"><span className="category-index">{String(index + 1).padStart(2, '0')} / JDU</span><span className="category-signal" aria-hidden="true" /></div><h3>{item.name}</h3><p>{t.categoryStats}: {item.projects.length} · {t.publishedStats}: {publishedCount}</p><span className="category-card-footer">{t.open} <span>↗</span></span></button>; })}</div></section>
+      <section className="categories-section" id="categories">
+        <div className="section-heading"><div><p className="section-kicker"><span />{c.navCategories}</p><h2>{t.categories}</h2><p>{c.discoverBody}</p></div></div>
+        <div className="category-grid">{categoryCards.map((item, index) => {
+          const publishedCount = item.projects.filter((project) => project.status === 'Published').length;
+          return <button className={`category-card category-card--${item.accent}`} key={item.name} type="button" onClick={() => openCategory(item.name)}>
+            <span className="category-number">0{index + 1}</span><span className="category-arrow">↗</span><h3>{item.name}</h3><p>{publishedCount} {c.projectsLabel}</p><span className="category-art"><i /><i /><i /></span>
+          </button>;
+        })}</div>
+      </section>
 
-          <section className="review-strip" id="review"><div><p className="eyebrow">05 / READY TO SHARE</p><h2>Every project deserves a clear story.</h2><p>Before the report meeting, make sure the viewer can understand the problem, the solution, and where to try it.</p></div><div className="review-items"><span><b>01</b> Explain the problem</span><span><b>02</b> Show the flow</span><span><b>03</b> Link the demo</span></div></section>
-
-          <section className="feedback-section" id="feedback"><div className="section-heading feedback-heading"><div><p className="eyebrow">06 / COMMUNITY PULSE</p><h2>{t.feedback}</h2><p>{t.feedbackBody}</p></div><div className="feedback-score"><b>{averageRating}</b><span>★★★★★</span><small>{t.averageScore}</small></div></div><div className="feedback-grid">{reviews.map((item) => <button className="feedback-card" type="button" key={item.id} onClick={() => { const project = projects.find((candidate) => candidate.id === item.projectId); if (project) { selectProject(project); setDetailTab('questions'); } }}><div className="feedback-card-top"><span className="feedback-avatar">{item.initials}</span><span className="feedback-meta"><b>{item.author}</b><small>{item.role}</small></span><span className="feedback-stars">{'★'.repeat(item.rating)}<i>{'★'.repeat(5 - item.rating)}</i></span></div><p>“{item.text}”</p><span className="feedback-project">{item.project}<span>↗</span></span></button>)}</div></section>
+      <section className="how-section" id="review">
+        <div className="how-copy"><p className="section-kicker"><span />{c.howKicker}</p><h2>{c.howTitle}</h2><p>{c.howBody}</p><button className="primary-button" type="button" onClick={continueSetup}>{profileComplete ? c.publish : c.heroSecondary}<span>↗</span></button></div>
+        <div className="how-steps">
+          <article><span>01</span><div><h3>{c.stepOneTitle}</h3><p>{c.stepOneBody}</p></div></article>
+          <article><span>02</span><div><h3>{c.stepTwoTitle}</h3><p>{c.stepTwoBody}</p></div></article>
+          <article><span>03</span><div><h3>{c.stepThreeTitle}</h3><p>{c.stepThreeBody}</p></div></article>
         </div>
       </section>
 
-      {selected && <div className="drawer-backdrop" role="presentation" onClick={() => setSelected(null)}><aside className="project-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">{t.projectDetails} / {selected.id}</span><button className="close-button" type="button" aria-label={t.close} onClick={() => setSelected(null)}>×</button></div><ProjectVisual project={selected} large /><div className="drawer-content"><div className="drawer-title-row"><div><p className="eyebrow">{selected.category}</p><h2 id="drawer-title">{selected.title}</h2><p className="drawer-owner">{t.by} {selected.owner} · {selected.updated}</p></div><span className={`status-pill status-pill--${selected.status.toLowerCase()}`}>{selected.status === 'Published' ? t.statusPublished : t.statusDraft}</span></div><div className="detail-tabs">{([['overview', t.overviewTab], ['questions', t.questions], ['board', t.board]] as [DetailTab, string][]).map(([key, label]) => <button className={detailTab === key ? 'is-active' : ''} key={key} type="button" onClick={() => setDetailTab(key)}>{label}</button>)}</div>{detailTab === 'overview' && <div className="detail-panel"><p className="detail-description">{selected.description}</p><div className="detail-stats"><span><b>{selected.views}</b><small>{t.views}</small></span><span><b>{selected.features.length.toString().padStart(2, '0')}</b><small>{t.features}</small></span><span><b>{selected.demoUrl ? '01' : '—'}</b><small>{t.demo}</small></span></div><h3>{t.features}</h3><ul className="feature-list">{selected.features.map((feature) => <li key={feature}><span>✓</span>{feature}</li>)}</ul><div className="tag-row">{selected.tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>{selected.demoUrl ? <a className="primary-button" href={selected.demoUrl} target="_blank" rel="noreferrer">{t.openDemo} <span>↗</span></a> : <button className="soft-button" type="button" onClick={() => notify(t.noDemo)}>{t.noDemo} <span>↗</span></button>}{canManageSelected && <div className="project-manage-actions"><button className="secondary-button" type="button" onClick={() => openProjectEditor(selected)}>{t.edit}</button><button className="secondary-button" type="button" onClick={() => toggleProjectStatus(selected)}>{selected.status === 'Published' ? t.moveToDraft : t.publish}</button><button className="danger-button" type="button" onClick={() => removeProject(selected)}>{t.delete}</button></div>}</div>}{detailTab === 'questions' && <div className="detail-panel"><div className="question-list">{selectedQuestions.length === 0 ? <p className="empty-detail">{t.noQuestions}</p> : selectedQuestions.map((item) => <div className="question-item" key={item.id}><span className="question-avatar">{item.initials}</span><div className="question-copy"><div className="question-meta"><b>{item.author}</b><small>{item.role} · {item.time}</small></div><p>{item.text}</p>{item.answer && <div className="question-answer"><span className="answer-avatar">{item.answer.initials}</span><div><div className="question-meta"><b>{item.answer.author}</b><small>{t.reply}</small></div><p>{item.answer.text}</p></div></div>}</div></div>)}</div><form className="question-form" onSubmit={postQuestion}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={t.ask} aria-label={t.ask} /><button className="primary-button" type="submit">{t.post} <span>↗</span></button></form><form className="review-form" onSubmit={postReview}><div className="review-form-heading"><b>{t.leaveFeedback}</b><span>1–5</span></div><div className="review-form-row"><select aria-label={t.averageScore} value={reviewRating} onChange={(event) => setReviewRating(event.target.value)}><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select><input value={reviewText} onChange={(event) => setReviewText(event.target.value)} placeholder={t.feedbackPlaceholder} aria-label={t.feedbackPlaceholder} /><button className="primary-button" type="submit">{t.saveFeedback} <span>↗</span></button></div></form></div>}{detailTab === 'board' && <div className="detail-panel"><div className="board-grid board-grid--interactive">{boardColumns.map((column) => <section className="board-column" key={column.key}><div className="board-column-heading"><span>{column.index} / {column.label}</span><b>{boardItems.filter((item) => item.column === column.key).length}</b></div><div className="board-items">{boardLoading ? <p className="empty-detail">{t.boardLoading}</p> : boardItems.filter((item) => item.column === column.key).map((item) => <article className="board-item" key={item.id}><b>{item.title}</b><i>{item.detail}</i>{canManageSelected && column.key !== 'done' && <button type="button" onClick={() => moveBoardItem(item)}>{t.boardMove} →</button>}</article>)}{!boardLoading && boardItems.filter((item) => item.column === column.key).length === 0 && <p className="empty-detail">{t.boardEmpty}</p>}</div></section>)}</div>{canManageSelected && <form className="board-form" onSubmit={addBoardItem}><b>{t.boardAddTask}</b><input value={boardTitle} onChange={(event) => setBoardTitle(event.target.value)} placeholder={t.boardTaskTitle} aria-label={t.boardTaskTitle} required /><input value={boardDetail} onChange={(event) => setBoardDetail(event.target.value)} placeholder={t.boardTaskDetail} aria-label={t.boardTaskDetail} /><select value={boardColumn} onChange={(event) => setBoardColumn(event.target.value as BoardColumn)} aria-label={t.boardTaskColumn}><option value="todo">{t.boardColumnTodo}</option><option value="progress">{t.boardColumnProgress}</option><option value="done">{t.boardColumnDone}</option></select><button className="primary-button" type="submit">{t.boardAdd}<span>↗</span></button></form>}<div className="board-review"><span className="board-review-mark">✦</span><div><b>{t.latestFeedback}</b><p>{reviews.find((item) => item.projectId === selected.id)?.text || t.boardFallback}</p></div></div></div>}</div></aside></div>}
+      <section className="feedback-section" id="feedback">
+        <div className="section-heading feedback-heading"><div><p className="section-kicker"><span />{c.communityKicker}</p><h2>{c.communityTitle}</h2><p>{c.communityBody}</p></div><div className="feedback-score"><b>{averageRating}</b><span>★★★★★</span><small>DEMO AVERAGE</small></div></div>
+        <div className="feedback-grid">{reviews.slice(0, 3).map((item) => <button className="feedback-card" type="button" key={item.id} onClick={() => { const project = projects.find((candidate) => candidate.id === item.projectId); if (project) { selectProject(project); setDetailTab('questions'); } }}><span className="demo-label">DEMO</span><div className="feedback-card-top"><span className="feedback-avatar">{item.initials}</span><span className="feedback-meta"><b>{item.author}</b><small>{item.role}</small></span><span className="feedback-stars">{'★'.repeat(item.rating)}<i>{'★'.repeat(5 - item.rating)}</i></span></div><p>“{item.text}”</p><span className="feedback-project">{item.project}<span>↗</span></span></button>)}</div>
+      </section>
 
-      {showAdd && <div className="drawer-backdrop" role="presentation" onClick={closeProjectComposer}><form className="add-drawer" role="dialog" aria-modal="true" aria-labelledby="add-drawer-title" onSubmit={handleAdd} onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">PUBLISH / 02</span><button className="close-button" type="button" aria-label={t.close} onClick={closeProjectComposer}>×</button></div><h2 id="add-drawer-title">{t.addTitle}</h2><p>{t.addBody}</p><div className="drawer-callout"><span>✦</span><p><b>{profile.name}</b><small>{profile.handle} · {profile.track || t.createProfile}</small></p></div><label>{t.title}<input name="title" required placeholder="JDU / ..." /></label><label>{t.owner}<input name="owner" required defaultValue={profile.name} placeholder="Your name" /></label><label>{t.category}<select name="category" defaultValue={profile.track || 'Culture + code'}><option>Learning systems</option><option>Community tools</option><option>Culture + code</option></select></label><label>{t.description}<textarea name="description" required placeholder="What does this project make possible?" rows={4} /></label><label>{t.demoUrl}<input name="demoUrl" type="url" placeholder="https://..." /></label><label>{t.projectStatus}<select name="status" defaultValue="Draft"><option value="Draft">{t.statusDraft}</option><option value="Published">{t.statusPublished}</option></select></label><label className="media-picker"><span className={`media-picker-preview ${projectCoverPreview ? 'has-image' : ''}`}>{projectCoverPreview ? <img src={projectCoverPreview} alt="" /> : <span className="media-picker-plus">+</span>}</span><span className="media-picker-copy"><b>{t.coverImage}</b><small>{projectCoverFile?.name || t.coverHint}</small></span><span className="media-picker-arrow">↗</span><input name="cover" type="file" accept="image/avif,image/gif,image/jpeg,image/png,image/webp" onChange={handleProjectCoverChange} /></label><button className="primary-button" type="submit">{t.save}<span>↗</span></button></form></div>}
+      <footer className="site-footer"><a className="brand" href="#top"><span className="brand-mark">J</span><span><b>JDU Portfolio</b><small>{c.footer}</small></span></a><div><button type="button" onClick={() => navigate('projects')}>{c.navExplore}</button><button type="button" onClick={() => navigate('categories')}>{c.navCategories}</button><button type="button" onClick={openProjectComposer}>{c.publish}</button></div><small>© 2026 JDU · Demo content is marked</small></footer>
 
-      {showEdit && editingProject && <div className="drawer-backdrop" role="presentation" onClick={closeProjectEditor}><form className="add-drawer" role="dialog" aria-modal="true" aria-labelledby="edit-drawer-title" onSubmit={handleEdit} onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">EDIT / {editingProject.id}</span><button className="close-button" type="button" aria-label={t.close} onClick={closeProjectEditor}>×</button></div><h2 id="edit-drawer-title">{t.edit}</h2><p>{t.editBody}</p><label>{t.title}<input name="title" required defaultValue={editingProject.title} /></label><label>{t.owner}<input name="owner" required defaultValue={editingProject.owner} /></label><label>{t.category}<select name="category" defaultValue={editingProject.category}><option>Learning systems</option><option>Community tools</option><option>Culture + code</option></select></label><label>{t.description}<textarea name="description" required defaultValue={editingProject.description} rows={4} /></label><label>{t.demoUrl}<input name="demoUrl" type="url" defaultValue={editingProject.demoUrl} placeholder="https://..." /></label><label>{t.projectStatus}<select name="status" defaultValue={editingProject.status}><option value="Draft">{t.statusDraft}</option><option value="Published">{t.statusPublished}</option></select></label><label className="media-picker"><span className={`media-picker-preview ${projectCoverPreview ? 'has-image' : ''}`}>{projectCoverPreview ? <img src={projectCoverPreview} alt="" /> : <span className="media-picker-plus">+</span>}</span><span className="media-picker-copy"><b>{t.coverImage}</b><small>{projectCoverFile?.name || t.coverHint}</small></span><span className="media-picker-arrow">↗</span><input name="cover" type="file" accept="image/avif,image/gif,image/jpeg,image/png,image/webp" onChange={handleProjectCoverChange} /></label><button className="primary-button" type="submit">{t.save}<span>↗</span></button></form></div>}
-      {showProfile && <div className="drawer-backdrop" role="presentation" onClick={closeProfile}><form className="profile-drawer" role="dialog" aria-modal="true" aria-labelledby="profile-drawer-title" onSubmit={handleProfileSave} onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">PROFILE / 01</span><button className="close-button" type="button" aria-label={t.close} onClick={closeProfile}>×</button></div><div className="profile-steps" aria-label={t.profile}><span className="is-active">01 {profileComplete ? t.editProfile : t.createProfile}</span><span>02 {t.add}</span><span>03 {t.demo}</span></div><h2 id="profile-drawer-title">{profileComplete ? t.editProfile : t.profileTitle}</h2><p>{profileComplete ? t.profileEditBody : t.profileBody}</p><div className="profile-preview"><span className="profile-avatar">{(profilePhotoPreview || profileDraft.avatarUrl) ? <img src={profilePhotoPreview || profileDraft.avatarUrl} alt="" /> : profileDraft.avatar}</span><div><b>{profileDraft.name || t.createProfile}</b><small>{profileDraft.handle}</small></div></div><label className="media-picker media-picker--profile"><span className={`media-picker-preview ${profilePhotoPreview || profileDraft.avatarUrl ? 'has-image' : ''}`}>{profilePhotoPreview || profileDraft.avatarUrl ? <img src={profilePhotoPreview || profileDraft.avatarUrl} alt="" /> : <span className="media-picker-plus">+</span>}</span><span className="media-picker-copy"><b>{t.avatarPhoto}</b><small>{profilePhotoFile?.name || t.photoHint}</small></span><span className="media-picker-arrow">↗</span><input name="avatar" type="file" accept="image/avif,image/gif,image/jpeg,image/png,image/webp" onChange={handleProfilePhotoChange} /></label><label>{t.profileName}<input name="name" required defaultValue={profileDraft.name} placeholder="Your name" /></label><label>{t.profileRole}<input name="role" required defaultValue={profileDraft.role} placeholder="Student creator" /></label><label>{t.profileTrack}<select name="track" required defaultValue={profileDraft.track}><option value="" disabled>Select a track</option><option>Learning systems</option><option>Community tools</option><option>Culture + code</option></select></label><label>{t.profileBio}<textarea name="bio" required defaultValue={profileDraft.bio} placeholder="What do you make, research, or care about?" rows={4} /></label><div className="drawer-actions"><button className="primary-button" type="submit">{t.saveProfile}<span>↗</span></button><button className="secondary-button" type="button" onClick={closeProfile}>{t.maybeLater}</button></div></form></div>}
+      {selected && <div className="drawer-backdrop" role="presentation" onClick={() => setSelected(null)}>
+        <aside className="project-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" onClick={(event) => event.stopPropagation()}>
+          <div className="drawer-top"><span className="eyebrow">{t.projectDetails} / {selected.id}</span><button className="close-button" type="button" aria-label={t.close} onClick={() => setSelected(null)}>×</button></div>
+          <ProjectVisual project={selected} large />
+          <div className="drawer-content">
+            <div className="drawer-title-row"><div><p className="eyebrow">{selected.category}</p><h2 id="drawer-title">{selected.title}</h2><p className="drawer-owner">{t.by} {selected.owner} · {selected.updated}</p></div><span className={`status-pill status-pill--${selected.status.toLowerCase()}`}>{selected.status === 'Published' ? t.statusPublished : t.statusDraft}</span></div>
+            <div className="detail-tabs">{([['overview', t.overviewTab], ['questions', t.questions], ['board', t.board]] as [DetailTab, string][]).map(([key, label]) => <button className={detailTab === key ? 'is-active' : ''} key={key} type="button" onClick={() => setDetailTab(key)}>{label}</button>)}</div>
+            {detailTab === 'overview' && <div className="detail-panel"><p className="detail-description">{selected.description}</p><div className="detail-stats"><span><b>{selected.views}</b><small>{t.views}</small></span><span><b>{selected.features.length.toString().padStart(2, '0')}</b><small>{t.features}</small></span><span><b>{selected.demoUrl ? '01' : '—'}</b><small>{t.demo}</small></span></div><h3>{t.features}</h3><ul className="feature-list">{selected.features.map((feature) => <li key={feature}><span>✓</span>{feature}</li>)}</ul><div className="tag-row">{selected.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>{selected.demoUrl ? <a className="primary-button" href={selected.demoUrl} target="_blank" rel="noreferrer">{t.openDemo} <span>↗</span></a> : <button className="secondary-button" type="button" onClick={() => notify(t.noDemo)}>{t.noDemo}</button>}{canManageSelected && <div className="project-manage-actions"><button className="secondary-button" type="button" onClick={() => openProjectEditor(selected)}>{t.edit}</button><button className="secondary-button" type="button" onClick={() => toggleProjectStatus(selected)}>{selected.status === 'Published' ? t.moveToDraft : t.publish}</button><button className="danger-button" type="button" onClick={() => removeProject(selected)}>{t.delete}</button></div>}</div>}
+            {detailTab === 'questions' && <div className="detail-panel"><div className="question-list">{selectedQuestions.length === 0 ? <p className="empty-detail">{t.noQuestions}</p> : selectedQuestions.map((item) => <div className="question-item" key={item.id}><span className="question-avatar">{item.initials}</span><div className="question-copy"><div className="question-meta"><b>{item.author}</b><small>{item.role} · {item.time}</small></div><p>{item.text}</p>{item.answer && <div className="question-answer"><span className="answer-avatar">{item.answer.initials}</span><div><div className="question-meta"><b>{item.answer.author}</b><small>{t.reply}</small></div><p>{item.answer.text}</p></div></div>}</div></div>)}</div><form className="question-form" onSubmit={postQuestion}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={t.ask} aria-label={t.ask} /><button className="primary-button" type="submit">{t.post}</button></form><form className="review-form" onSubmit={postReview}><div className="review-form-heading"><b>{t.leaveFeedback}</b><span>1–5</span></div><div className="review-form-row"><select aria-label={t.averageScore} value={reviewRating} onChange={(event) => setReviewRating(event.target.value)}><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select><input value={reviewText} onChange={(event) => setReviewText(event.target.value)} placeholder={t.feedbackPlaceholder} aria-label={t.feedbackPlaceholder} /><button className="primary-button" type="submit">{t.saveFeedback}</button></div></form></div>}
+            {detailTab === 'board' && <div className="detail-panel"><div className="board-grid board-grid--interactive">{boardColumns.map((column) => <section className="board-column" key={column.key}><div className="board-column-heading"><span>{column.index} / {column.label}</span><b>{boardItems.filter((item) => item.column === column.key).length}</b></div><div className="board-items">{boardLoading ? <p className="empty-detail">{t.boardLoading}</p> : boardItems.filter((item) => item.column === column.key).map((item) => <article className="board-item" key={item.id}><b>{item.title}</b><i>{item.detail}</i>{canManageSelected && column.key !== 'done' && <button type="button" onClick={() => moveBoardItem(item)}>{t.boardMove} →</button>}</article>)}{!boardLoading && boardItems.filter((item) => item.column === column.key).length === 0 && <p className="empty-detail">{t.boardEmpty}</p>}</div></section>)}</div>{canManageSelected && <form className="board-form" onSubmit={addBoardItem}><b>{t.boardAddTask}</b><input value={boardTitle} onChange={(event) => setBoardTitle(event.target.value)} placeholder={t.boardTaskTitle} aria-label={t.boardTaskTitle} required /><input value={boardDetail} onChange={(event) => setBoardDetail(event.target.value)} placeholder={t.boardTaskDetail} aria-label={t.boardTaskDetail} /><select value={boardColumn} onChange={(event) => setBoardColumn(event.target.value as BoardColumn)} aria-label={t.boardTaskColumn}><option value="todo">{t.boardColumnTodo}</option><option value="progress">{t.boardColumnProgress}</option><option value="done">{t.boardColumnDone}</option></select><button className="primary-button" type="submit">{t.boardAdd}</button></form>}<div className="board-review"><span className="board-review-mark">✦</span><div><b>{t.latestFeedback}</b><p>{reviews.find((item) => item.projectId === selected.id)?.text || t.boardFallback}</p></div></div></div>}
+          </div>
+        </aside>
+      </div>}
+
+      {showAdd && <div className="drawer-backdrop" role="presentation" onClick={closeProjectComposer}><form className="add-drawer" role="dialog" aria-modal="true" aria-labelledby="add-drawer-title" onSubmit={handleAdd} onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">PUBLISH / 02</span><button className="close-button" type="button" aria-label={t.close} onClick={closeProjectComposer}>×</button></div><h2 id="add-drawer-title">{t.addTitle}</h2><p>{t.addBody}</p><div className="drawer-callout"><span className="profile-avatar">{profile.avatarUrl ? <img src={profile.avatarUrl} alt="" /> : profile.avatar}</span><p><b>{profile.name}</b><small>{profile.handle} · {profile.track || t.createProfile}</small></p></div><label>{t.title}<input name="title" required placeholder="JDU / ..." /></label><label>{t.owner}<input name="owner" required defaultValue={profile.name} placeholder="Your name" /></label><label>{t.category}<select name="category" defaultValue={profile.track || 'Culture + code'}><option>Learning systems</option><option>Community tools</option><option>Culture + code</option></select></label><label>{t.description}<textarea name="description" required placeholder="What does this project make possible?" rows={4} /></label><label>{t.demoUrl}<input name="demoUrl" type="url" placeholder="https://..." /></label><label>{t.projectStatus}<select name="status" defaultValue="Draft"><option value="Draft">{t.statusDraft}</option><option value="Published">{t.statusPublished}</option></select></label><label className="media-picker"><span className={`media-picker-preview ${projectCoverPreview ? 'has-image' : ''}`}>{projectCoverPreview ? <img src={projectCoverPreview} alt="" /> : <span className="media-picker-plus">＋</span>}</span><span className="media-picker-copy"><b>{t.coverImage}</b><small>{projectCoverFile?.name || t.coverHint}</small></span><span className="media-picker-arrow">↗</span><input name="cover" type="file" accept="image/avif,image/gif,image/jpeg,image/png,image/webp" onChange={handleProjectCoverChange} /></label><button className="primary-button" type="submit">{t.save}<span>↗</span></button></form></div>}
+
+      {showEdit && editingProject && <div className="drawer-backdrop" role="presentation" onClick={closeProjectEditor}><form className="add-drawer" role="dialog" aria-modal="true" aria-labelledby="edit-drawer-title" onSubmit={handleEdit} onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">EDIT / {editingProject.id}</span><button className="close-button" type="button" aria-label={t.close} onClick={closeProjectEditor}>×</button></div><h2 id="edit-drawer-title">{t.edit}</h2><p>{t.editBody}</p><label>{t.title}<input name="title" required defaultValue={editingProject.title} /></label><label>{t.owner}<input name="owner" required defaultValue={editingProject.owner} /></label><label>{t.category}<select name="category" defaultValue={editingProject.category}><option>Learning systems</option><option>Community tools</option><option>Culture + code</option></select></label><label>{t.description}<textarea name="description" required defaultValue={editingProject.description} rows={4} /></label><label>{t.demoUrl}<input name="demoUrl" type="url" defaultValue={editingProject.demoUrl} placeholder="https://..." /></label><label>{t.projectStatus}<select name="status" defaultValue={editingProject.status}><option value="Draft">{t.statusDraft}</option><option value="Published">{t.statusPublished}</option></select></label><label className="media-picker"><span className={`media-picker-preview ${projectCoverPreview ? 'has-image' : ''}`}>{projectCoverPreview ? <img src={projectCoverPreview} alt="" /> : <span className="media-picker-plus">＋</span>}</span><span className="media-picker-copy"><b>{t.coverImage}</b><small>{projectCoverFile?.name || t.coverHint}</small></span><span className="media-picker-arrow">↗</span><input name="cover" type="file" accept="image/avif,image/gif,image/jpeg,image/png,image/webp" onChange={handleProjectCoverChange} /></label><button className="primary-button" type="submit">{t.save}<span>↗</span></button></form></div>}
+
+      {showProfile && <div className="drawer-backdrop" role="presentation" onClick={closeProfile}><form className="profile-drawer" role="dialog" aria-modal="true" aria-labelledby="profile-drawer-title" onSubmit={handleProfileSave} onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">PROFILE / 01</span><button className="close-button" type="button" aria-label={t.close} onClick={closeProfile}>×</button></div><div className="profile-steps" aria-label={t.profile}><span className="is-active">01 {profileComplete ? t.editProfile : t.createProfile}</span><span>02 {t.add}</span><span>03 {t.demo}</span></div><h2 id="profile-drawer-title">{profileComplete ? t.editProfile : t.profileTitle}</h2><p>{profileComplete ? t.profileEditBody : t.profileBody}</p><div className="profile-preview"><span className="profile-avatar">{(profilePhotoPreview || profileDraft.avatarUrl) ? <img src={profilePhotoPreview || profileDraft.avatarUrl} alt="" /> : profileDraft.avatar}</span><div><b>{profileDraft.name || t.createProfile}</b><small>{profileDraft.handle}</small></div></div><label className="media-picker media-picker--profile"><span className={`media-picker-preview ${profilePhotoPreview || profileDraft.avatarUrl ? 'has-image' : ''}`}>{profilePhotoPreview || profileDraft.avatarUrl ? <img src={profilePhotoPreview || profileDraft.avatarUrl} alt="" /> : <span className="media-picker-plus">＋</span>}</span><span className="media-picker-copy"><b>{t.avatarPhoto}</b><small>{profilePhotoFile?.name || t.photoHint}</small></span><span className="media-picker-arrow">↗</span><input name="avatar" type="file" accept="image/avif,image/gif,image/jpeg,image/png,image/webp" onChange={handleProfilePhotoChange} /></label><label>{t.profileName}<input name="name" required defaultValue={profileDraft.name} placeholder="Your name" /></label><label>{t.profileRole}<input name="role" required defaultValue={profileDraft.role} placeholder="Student creator" /></label><label>{t.profileTrack}<select name="track" required defaultValue={profileDraft.track}><option value="" disabled>Select a track</option><option>Learning systems</option><option>Community tools</option><option>Culture + code</option></select></label><label>{t.profileBio}<textarea name="bio" required defaultValue={profileDraft.bio} placeholder="What do you make, research, or care about?" rows={4} /></label><div className="drawer-actions"><button className="primary-button" type="submit">{t.saveProfile}<span>↗</span></button><button className="secondary-button" type="button" onClick={closeProfile}>{t.maybeLater}</button></div></form></div>}
+
       {toast && <div className="toast" role="status">{toast}<button type="button" onClick={() => setToast('')}>×</button></div>}
     </main>
   );
