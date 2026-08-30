@@ -508,11 +508,16 @@ a { color: inherit; text-decoration: none; }
 
 .drawer-backdrop { backdrop-filter: blur(8px); background: rgba(3,5,7,.72); }
 .project-drawer, .add-drawer, .profile-drawer {
+  background: var(--surface);
+  border-left: 1px solid var(--line);
   box-shadow: -24px 0 70px rgba(0,0,0,.36);
+  height: 100%;
   max-width: 560px;
+  overflow: auto;
   padding: 24px;
   transform: translateX(0);
   transition: opacity 180ms ease, transform 220ms ease-out;
+  width: 100%;
 }
 .project-drawer, .add-drawer, .profile-drawer {
   @starting-style {
@@ -522,6 +527,7 @@ a { color: inherit; text-decoration: none; }
 }
 .drawer-content h2, .add-drawer h2, .profile-drawer h2 { font-size: 32px; }
 .add-drawer, .profile-drawer { gap: 12px; }
+.profile-drawer { display: flex; flex-direction: column; min-height: 100%; }
 .add-drawer h2, .profile-drawer h2 { margin-top: 24px; }
 .add-drawer > p, .profile-drawer > p { font-size: 12px; }
 .drawer-callout {
@@ -547,7 +553,31 @@ a { color: inherit; text-decoration: none; }
 .profile-preview b { font-size: 12px; }
 .profile-preview small { color: var(--muted); font-size: 10px; }
 .add-drawer label, .profile-drawer label { font-size: 9px; gap: 6px; }
+.profile-drawer label {
+  color: var(--muted);
+  display: grid;
+  font-size: 10px;
+  font-weight: 600;
+  gap: 7px;
+  letter-spacing: .06em;
+  min-width: 0;
+  text-transform: uppercase;
+  width: 100%;
+}
 .add-drawer input, .add-drawer textarea, .add-drawer select, .profile-drawer input, .profile-drawer textarea, .profile-drawer select { border-radius: 9px; padding: 10px; }
+.profile-drawer input, .profile-drawer textarea, .profile-drawer select {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--text);
+  display: block;
+  font-size: 13px;
+  line-height: 1.35;
+  min-height: 40px;
+  outline: 0;
+  width: 100%;
+}
+.profile-drawer input::placeholder, .profile-drawer textarea::placeholder { color: var(--muted-2); }
+.profile-drawer textarea { min-height: 92px; }
 .question-form input:focus, .add-drawer input:focus, .add-drawer textarea:focus, .add-drawer select:focus, .profile-drawer input:focus, .profile-drawer textarea:focus, .profile-drawer select:focus { box-shadow: 0 0 0 3px rgba(163,107,255,.12); }
 .drawer-actions { align-items: center; display: flex; flex-wrap: wrap; gap: 9px; margin-top: 6px; }
 .secondary-button { background: transparent; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); font-size: 11px; font-weight: 600; padding: 10px 13px; transition: background 160ms ease, color 160ms ease; }
