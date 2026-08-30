@@ -1,13 +1,11 @@
 'use client';
 
-import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { toast } from 'sonner';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 
 type Language = 'EN' | 'RU' | 'UZ' | 'JP';
 type Accent = 'violet' | 'orange' | 'blue' | 'green' | 'pink';
 type View = 'overview' | 'projects' | 'categories' | 'review';
 type DetailTab = 'overview' | 'questions' | 'board';
-type DrawerKind = 'project' | 'add';
 
 type Project = {
   id: string;
@@ -224,7 +222,6 @@ const ui: Record<Language, Record<string, string>> = {
     review: 'Portfolio review',
     status: 'Open archive',
     add: 'Add project',
-    demoBadge: 'Demo workspace · sample data',
     featured: 'Featured project',
     featuredTitle: 'Make work easy to find.',
     featuredBody: 'One focused home for student systems, stories, and prototypes — ready for the next person to open.',
@@ -252,7 +249,7 @@ const ui: Record<Language, Record<string, string>> = {
     demo: 'Demo link',
     noDemo: 'Add a demo URL before publishing',
     addTitle: 'Add a project',
-    addBody: 'Add a case study to the archive. Replace the sample content with your real project and demo link.',
+    addBody: 'Create a project card now. We can connect the real database and file uploads next.',
     title: 'Project name',
     owner: 'Creator / team',
     category: 'Category',
@@ -283,7 +280,6 @@ const ui: Record<Language, Record<string, string>> = {
     review: 'Проверка портфолио',
     status: 'Открытый архив',
     add: 'Добавить проект',
-    demoBadge: 'Учебная демонстрация · примерные данные',
     featured: 'Избранный проект',
     featuredTitle: 'Пусть работу легко найти.',
     featuredBody: 'Одно место для систем, историй и прототипов студентов — чтобы следующий человек мог их открыть.',
@@ -311,7 +307,7 @@ const ui: Record<Language, Record<string, string>> = {
     demo: 'Демо-ссылка',
     noDemo: 'Добавь URL демо перед публикацией',
     addTitle: 'Добавить проект',
-    addBody: 'Добавь кейс в архив. Замени демонстрационные данные своим проектом и ссылкой на демо.',
+    addBody: 'Создай карточку проекта. Позже подключим настоящую базу и загрузку файлов.',
     title: 'Название проекта',
     owner: 'Автор / команда',
     category: 'Категория',
@@ -342,7 +338,6 @@ const ui: Record<Language, Record<string, string>> = {
     review: 'Portfolio tekshiruvi',
     status: 'Ochiq arxiv',
     add: 'Loyiha qo‘shish',
-    demoBadge: 'Demo ish maydoni · namunaviy ma’lumotlar',
     featured: 'Tanlangan loyiha',
     featuredTitle: 'Ishni topishni oson qiling.',
     featuredBody: 'Talabalar tizimlari, hikoyalari va prototiplari uchun bitta joy.',
@@ -370,7 +365,7 @@ const ui: Record<Language, Record<string, string>> = {
     demo: 'Demo havolasi',
     noDemo: 'Nashrdan oldin demo URL qo‘shing',
     addTitle: 'Loyiha qo‘shish',
-    addBody: 'Arxivga case study qo‘shing. Namunaviy ma’lumotlarni haqiqiy loyiha va demo havolangiz bilan almashtiring.',
+    addBody: 'Hozir loyiha kartasini yarating. Keyin haqiqiy baza va fayl yuklashni ulaymiz.',
     title: 'Loyiha nomi',
     owner: 'Muallif / jamoa',
     category: 'Kategoriya',
@@ -401,7 +396,6 @@ const ui: Record<Language, Record<string, string>> = {
     review: 'ポートフォリオ確認',
     status: '公開アーカイブ',
     add: '作品を追加',
-    demoBadge: 'デモワークスペース・サンプルデータ',
     featured: '注目の作品',
     featuredTitle: '作品を見つけやすくする。',
     featuredBody: '学生のシステム、物語、プロトタイプをひとつの場所に。',
@@ -429,7 +423,7 @@ const ui: Record<Language, Record<string, string>> = {
     demo: 'デモリンク',
     noDemo: '公開前にデモURLを追加してください',
     addTitle: '作品を追加',
-    addBody: 'アーカイブにケーススタディを追加します。サンプルデータを実際の作品とデモリンクに置き換えてください。',
+    addBody: '作品カードを作成します。次にデータベースとファイルを接続できます。',
     title: '作品名',
     owner: '作者 / チーム',
     category: 'カテゴリー',
@@ -491,8 +485,7 @@ export default function Home() {
   const [reviews, setReviews] = useState<Review[]>(feedback);
   const [reviewText, setReviewText] = useState('');
   const [reviewRating, setReviewRating] = useState('5');
-  const [closingDrawer, setClosingDrawer] = useState<DrawerKind | null>(null);
-  const drawerCloseTimer = useRef<number | null>(null);
+  const [toast, setToast] = useState('');
   const t = ui[language];
   const featured = projects[0];
 
@@ -522,54 +515,10 @@ export default function Home() {
     return statusMatch && categoryMatch && (!query.trim() || text.includes(query.trim().toLowerCase()));
   }), [category, filter, projects, query]);
 
-  const closeDrawer = useCallback((kind: DrawerKind) => {
-    if (drawerCloseTimer.current !== null) window.clearTimeout(drawerCloseTimer.current);
-    setClosingDrawer(kind);
-    drawerCloseTimer.current = window.setTimeout(() => {
-      if (kind === 'project') setSelected(null);
-      if (kind === 'add') setShowAdd(false);
-      setClosingDrawer(null);
-      drawerCloseTimer.current = null;
-    }, 180);
-  }, []);
-
-  useEffect(() => {
-    if (!selected && !showAdd) return;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key !== 'Escape') return;
-      closeDrawer(showAdd ? 'add' : 'project');
-    }
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [closeDrawer, selected, showAdd]);
-
-  useEffect(() => () => {
-    if (drawerCloseTimer.current !== null) window.clearTimeout(drawerCloseTimer.current);
-  }, []);
-
   function selectProject(project: Project) {
-    if (drawerCloseTimer.current !== null) window.clearTimeout(drawerCloseTimer.current);
-    drawerCloseTimer.current = null;
-    setClosingDrawer(null);
-    setShowAdd(false);
     setSelected(project);
     setDetailTab('overview');
     setQuestion('');
-  }
-
-  function openAddDrawer() {
-    if (drawerCloseTimer.current !== null) window.clearTimeout(drawerCloseTimer.current);
-    drawerCloseTimer.current = null;
-    setClosingDrawer(null);
-    setSelected(null);
-    setShowAdd(true);
   }
 
   function navigate(nextView: View) {
@@ -580,13 +529,13 @@ export default function Home() {
   }
 
   function notify(message: string) {
-    toast.info(message);
+    setToast(message);
+    window.setTimeout(() => setToast(''), 3600);
   }
 
   async function handleAdd(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const formElement = event.currentTarget;
-    const form = new FormData(formElement);
+    const form = new FormData(event.currentTarget);
     const payload = {
       title: String(form.get('title') || 'Untitled project'),
       owner: String(form.get('owner') || 'JDU student'),
@@ -594,28 +543,20 @@ export default function Home() {
       description: String(form.get('description') || 'A new project in the JDU portfolio workspace.'),
       demoUrl: String(form.get('demoUrl') || ''),
     };
-    const request = fetch('/api/projects', {
+    try {
+      const response = await fetch('/api/projects', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-      }).then(async (response) => {
+      });
       if (!response.ok) throw new Error('Project could not be saved');
-      return response.json() as Promise<Project>;
-    });
-
-    toast.promise(request, {
-      loading: 'Saving project…',
-      success: t.added,
-      error: 'The project could not be saved. Please try again.',
-    });
-
-    try {
-      const saved = await request;
+      const saved = await response.json() as Project;
       setProjects((current) => [saved, ...current]);
-      closeDrawer('add');
-      formElement.reset();
+      setShowAdd(false);
+      notify(t.added);
+      event.currentTarget.reset();
     } catch {
-      // Sonner owns the visible error state for this request.
+      notify('The project could not be saved. Please try again.');
     }
   }
 
@@ -623,27 +564,19 @@ export default function Home() {
     event.preventDefault();
     if (!selected || !question.trim()) return;
     const projectId = selected.id;
-    const request = fetch('/api/questions', {
+    try {
+      const response = await fetch('/api/questions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ projectId, text: question.trim() }),
-      }).then(async (response) => {
+      });
       if (!response.ok) throw new Error('Question could not be saved');
-      return response.json() as Promise<Question>;
-    });
-
-    toast.promise(request, {
-      loading: 'Posting question…',
-      success: 'Question added to the project board.',
-      error: 'The question could not be saved. Please try again.',
-    });
-
-    try {
-      const saved = await request;
+      const saved = await response.json() as Question;
       setQuestions((current) => ({ ...current, [projectId]: [...(current[projectId] || []), saved] }));
       setQuestion('');
+      notify('Question added to the project board.');
     } catch {
-      // Sonner owns the visible error state for this request.
+      notify('The question could not be saved. Please try again.');
     }
   }
 
@@ -651,28 +584,20 @@ export default function Home() {
     event.preventDefault();
     if (!selected || !reviewText.trim()) return;
     const projectId = selected.id;
-    const request = fetch('/api/reviews', {
+    try {
+      const response = await fetch('/api/reviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ projectId, rating: Number(reviewRating), text: reviewText.trim() }),
-      }).then(async (response) => {
+      });
       if (!response.ok) throw new Error('Feedback could not be saved');
-      return response.json() as Promise<Review>;
-    });
-
-    toast.promise(request, {
-      loading: 'Saving feedback…',
-      success: t.feedbackSaved,
-      error: 'The feedback could not be saved. Please try again.',
-    });
-
-    try {
-      const saved = await request;
+      const saved = await response.json() as Review;
       setReviews((current) => [saved, ...current]);
       setReviewText('');
       setReviewRating('5');
+      notify(t.feedbackSaved);
     } catch {
-      // Sonner owns the visible error state for this request.
+      notify('The feedback could not be saved. Please try again.');
     }
   }
 
@@ -694,17 +619,17 @@ export default function Home() {
       </aside>
 
       <section className="main-panel" id="top">
-        <header className="main-header"><div className="header-left"><button className="sidebar-toggle" type="button" aria-label="Toggle sidebar" onClick={() => { setSidebarCollapsed((current) => !current); setSidebarOpen(true); }}><span /><span /><span /></button><div><p>{t.workspace}</p><h1>{viewTitle}</h1></div></div><div className="header-actions"><div className="language-switcher">{(['EN', 'RU', 'UZ', 'JP'] as Language[]).map((item) => <button className={language === item ? 'is-active' : ''} key={item} type="button" onClick={() => setLanguage(item)} aria-pressed={language === item}>{item}</button>)}</div><button className="header-add" type="button" onClick={openAddDrawer}><span>+</span>{t.add}</button><span className="header-avatar">JD</span></div></header>
+        <header className="main-header"><div className="header-left"><button className="sidebar-toggle" type="button" aria-label="Toggle sidebar" onClick={() => { setSidebarCollapsed((current) => !current); setSidebarOpen(true); }}><span /><span /><span /></button><div><p>{t.workspace}</p><h1>{viewTitle}</h1></div></div><div className="header-actions"><div className="language-switcher">{(['EN', 'RU', 'UZ', 'JP'] as Language[]).map((item) => <button className={language === item ? 'is-active' : ''} key={item} type="button" onClick={() => setLanguage(item)} aria-pressed={language === item}>{item}</button>)}</div><button className="header-add" type="button" onClick={() => setShowAdd(true)}><span>+</span>{t.add}</button><span className="header-avatar">JD</span></div></header>
 
         <div className="content-area">
           <section className="hero-grid" id="overview">
-            <article className="welcome-card"><div className="welcome-copy"><p className="eyebrow">JDU / PORTFOLIO 2026</p><span className="demo-badge">{t.demoBadge}</span><h2>{t.featuredTitle}</h2><p>{t.featuredBody}</p><div className="welcome-stats"><span><b>{projects.length.toString().padStart(2, '0')}</b><small>PROJECTS</small></span><span><b>04</b><small>LANGUAGES</small></span><span><b>01</b><small>ARCHIVE</small></span></div><button className="primary-button" type="button" onClick={() => selectProject(featured)}>{t.openProject}<span>↗</span></button></div><div className="welcome-visual"><ProjectVisual project={featured} large /><div className="visual-caption"><span>{t.featured}</span><b>{featured.title}</b></div></div></article>
+            <article className="welcome-card"><div className="welcome-copy"><p className="eyebrow">JDU / PORTFOLIO 2026</p><h2>{t.featuredTitle}</h2><p>{t.featuredBody}</p><div className="welcome-stats"><span><b>{projects.length.toString().padStart(2, '0')}</b><small>PROJECTS</small></span><span><b>04</b><small>LANGUAGES</small></span><span><b>01</b><small>ARCHIVE</small></span></div><button className="primary-button" type="button" onClick={() => selectProject(featured)}>{t.openProject}<span>↗</span></button></div><div className="welcome-visual"><ProjectVisual project={featured} large /><div className="visual-caption"><span>{t.featured}</span><b>{featured.title}</b></div></div></article>
             <aside className="readiness-card"><div className="card-heading"><div><p className="eyebrow">02 / CHECKLIST</p><h2>{t.readiness}</h2></div><span className="more-button">•••</span></div><div className="readiness-ring"><span><b>76</b><small>% ready</small></span></div><p className="readiness-copy">{t.readinessBody}</p><ul className="checklist"><li className="done"><span>✓</span> Project library</li><li className="done"><span>✓</span> Four languages</li><li className="done"><span>✓</span> Questions + board</li><li><span>○</span> Real demo links</li></ul><button className="soft-button" type="button" onClick={() => navigate('review')}>{t.review} <span>↗</span></button></aside>
           </section>
 
           <section className="guide-card"><div className="guide-preview"><span className="guide-icon">JDU</span><span className="guide-play">▶</span></div><div className="guide-copy"><p className="eyebrow">START HERE · 03 MIN</p><h2>{t.guide}</h2><p>{t.guideBody}</p></div><button className="guide-button" type="button" onClick={() => notify('Guide mode will open once the portfolio content is connected.')}>{t.readGuide}<span>↗</span></button></section>
 
-          <section className="library-section" id="library"><div className="section-heading"><div><p className="eyebrow">03 / LIBRARY</p><h2>{t.library}</h2><p>{t.libraryBody}</p></div><button className="outline-button" type="button" onClick={openAddDrawer}>+ {t.add}</button></div><div className="library-toolbar"><div className="status-tabs">{[['All', t.all], ['Published', t.published], ['Draft', t.drafts]].map(([key, label]) => <button className={filter === key ? 'is-active' : ''} key={key} type="button" onClick={() => setFilter(key)}>{label}</button>)}</div><div className="category-selects"><select aria-label={t.category} value={category} onChange={(event) => setCategory(event.target.value)}>{categories.map((item) => <option key={item} value={item}>{item === 'All' ? t.all : item}</option>)}</select><label className="search-input"><span>⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t.search} aria-label={t.search} /></label></div></div><div className="project-grid">{filteredProjects.map((project) => <article className="portfolio-card" key={project.id}><button className="portfolio-card-main" type="button" onClick={() => selectProject(project)}><ProjectVisual project={project} /><div className="portfolio-card-body"><div className="portfolio-card-title"><h3>{project.title}</h3><span>↗</span></div><p>{project.description}</p></div></button><div className="portfolio-card-footer"><span>{project.category}</span><span className={`status-pill status-pill--${project.status.toLowerCase()}`}>{project.status}</span></div></article>)}</div>{filteredProjects.length === 0 && <div className="empty-library">No projects match this filter.</div>}</section>
+          <section className="library-section" id="library"><div className="section-heading"><div><p className="eyebrow">03 / LIBRARY</p><h2>{t.library}</h2><p>{t.libraryBody}</p></div><button className="outline-button" type="button" onClick={() => setShowAdd(true)}>+ {t.add}</button></div><div className="library-toolbar"><div className="status-tabs">{[['All', t.all], ['Published', t.published], ['Draft', t.drafts]].map(([key, label]) => <button className={filter === key ? 'is-active' : ''} key={key} type="button" onClick={() => setFilter(key)}>{label}</button>)}</div><div className="category-selects"><select aria-label={t.category} value={category} onChange={(event) => setCategory(event.target.value)}>{categories.map((item) => <option key={item} value={item}>{item === 'All' ? t.all : item}</option>)}</select><label className="search-input"><span>⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t.search} aria-label={t.search} /></label></div></div><div className="project-grid">{filteredProjects.map((project) => <article className="portfolio-card" key={project.id}><button className="portfolio-card-main" type="button" onClick={() => selectProject(project)}><ProjectVisual project={project} /><div className="portfolio-card-body"><div className="portfolio-card-title"><h3>{project.title}</h3><span>↗</span></div><p>{project.description}</p></div></button><div className="portfolio-card-footer"><span>{project.category}</span><span className={`status-pill status-pill--${project.status.toLowerCase()}`}>{project.status}</span></div></article>)}</div>{filteredProjects.length === 0 && <div className="empty-library">No projects match this filter.</div>}</section>
 
           <section className="review-strip" id="review"><div><p className="eyebrow">04 / READY TO SHARE</p><h2>Every project deserves a clear story.</h2><p>Before the report meeting, make sure the viewer can understand the problem, the solution, and where to try it.</p></div><div className="review-items"><span><b>01</b> Explain the problem</span><span><b>02</b> Show the flow</span><span><b>03</b> Link the demo</span></div></section>
 
@@ -712,9 +637,10 @@ export default function Home() {
         </div>
       </section>
 
-      {selected && <div className={`drawer-backdrop ${closingDrawer === 'project' ? 'is-closing' : ''}`} role="presentation" onClick={() => closeDrawer('project')}><aside className="project-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">{t.projectDetails} / {selected.id}</span><button autoFocus className="close-button" type="button" aria-label={t.close} onClick={() => closeDrawer('project')}>×</button></div><ProjectVisual project={selected} large /><div className="drawer-content"><div className="drawer-title-row"><div><p className="eyebrow">{selected.category}</p><h2 id="drawer-title">{selected.title}</h2><p className="drawer-owner">{t.by} {selected.owner} · {selected.updated}</p></div><span className={`status-pill status-pill--${selected.status.toLowerCase()}`}>{selected.status}</span></div><div className="detail-tabs">{([['overview', t.overviewTab], ['questions', t.questions], ['board', t.board]] as [DetailTab, string][]).map(([key, label]) => <button className={detailTab === key ? 'is-active' : ''} key={key} type="button" onClick={() => setDetailTab(key)}>{label}</button>)}</div>{detailTab === 'overview' && <div className="detail-panel"><p className="detail-description">{selected.description}</p><div className="detail-stats"><span><b>{selected.views}</b><small>{t.views}</small></span><span><b>{selected.features.length.toString().padStart(2, '0')}</b><small>{t.features}</small></span><span><b>{selected.demoUrl ? '01' : '—'}</b><small>{t.demo}</small></span></div><h3>{t.features}</h3><ul className="feature-list">{selected.features.map((feature) => <li key={feature}><span>✓</span>{feature}</li>)}</ul><div className="tag-row">{selected.tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>{selected.demoUrl ? <a className="primary-button" href={selected.demoUrl} target="_blank" rel="noreferrer">Open demo <span>↗</span></a> : <button className="soft-button" type="button" onClick={() => notify(t.noDemo)}>{t.noDemo} <span>↗</span></button>}</div>}{detailTab === 'questions' && <div className="detail-panel"><div className="question-list">{selectedQuestions.length === 0 ? <p className="empty-detail">{t.noQuestions}</p> : selectedQuestions.map((item) => <div className="question-item" key={item.id}><span className="question-avatar">{item.initials}</span><div className="question-copy"><div className="question-meta"><b>{item.author}</b><small>{item.role} · {item.time}</small></div><p>{item.text}</p>{item.answer && <div className="question-answer"><span className="answer-avatar">{item.answer.initials}</span><div><div className="question-meta"><b>{item.answer.author}</b><small>{t.reply}</small></div><p>{item.answer.text}</p></div></div>}</div></div>)}</div><form className="question-form" onSubmit={postQuestion}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={t.ask} aria-label={t.ask} /><button className="primary-button" type="submit">{t.post} <span>↗</span></button></form><form className="review-form" onSubmit={postReview}><div className="review-form-heading"><b>{t.leaveFeedback}</b><span>1–5</span></div><div className="review-form-row"><select aria-label={t.averageScore} value={reviewRating} onChange={(event) => setReviewRating(event.target.value)}><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select><input value={reviewText} onChange={(event) => setReviewText(event.target.value)} placeholder={t.feedbackPlaceholder} aria-label={t.feedbackPlaceholder} /><button className="primary-button" type="submit">{t.saveFeedback} <span>↗</span></button></div></form></div>}{detailTab === 'board' && <div className="detail-panel"><div className="board-grid"><div><span>01 / TODO</span><b>Shape the story</b><i>Problem statement</i><i>Audience notes</i></div><div><span>02 / IN PROGRESS</span><b>Build the flow</b><i>Core interaction</i><i>Responsive pass</i></div><div><span>03 / DONE</span><b>Show the work</b><i>Project concept</i><i>Visual direction</i></div></div><div className="board-review"><span className="board-review-mark">✦</span><div><b>Latest feedback</b><p>{reviews.find((item) => item.projectId === selected.id)?.text || 'The project is ready for another round of notes.'}</p></div></div></div>}</div></aside></div>}
+      {selected && <div className="drawer-backdrop" role="presentation" onClick={() => setSelected(null)}><aside className="project-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">{t.projectDetails} / {selected.id}</span><button className="close-button" type="button" aria-label={t.close} onClick={() => setSelected(null)}>×</button></div><ProjectVisual project={selected} large /><div className="drawer-content"><div className="drawer-title-row"><div><p className="eyebrow">{selected.category}</p><h2 id="drawer-title">{selected.title}</h2><p className="drawer-owner">{t.by} {selected.owner} · {selected.updated}</p></div><span className={`status-pill status-pill--${selected.status.toLowerCase()}`}>{selected.status}</span></div><div className="detail-tabs">{([['overview', t.overviewTab], ['questions', t.questions], ['board', t.board]] as [DetailTab, string][]).map(([key, label]) => <button className={detailTab === key ? 'is-active' : ''} key={key} type="button" onClick={() => setDetailTab(key)}>{label}</button>)}</div>{detailTab === 'overview' && <div className="detail-panel"><p className="detail-description">{selected.description}</p><div className="detail-stats"><span><b>{selected.views}</b><small>{t.views}</small></span><span><b>{selected.features.length.toString().padStart(2, '0')}</b><small>{t.features}</small></span><span><b>{selected.demoUrl ? '01' : '—'}</b><small>{t.demo}</small></span></div><h3>{t.features}</h3><ul className="feature-list">{selected.features.map((feature) => <li key={feature}><span>✓</span>{feature}</li>)}</ul><div className="tag-row">{selected.tags.map((tag) => <span key={tag}>#{tag}</span>)}</div>{selected.demoUrl ? <a className="primary-button" href={selected.demoUrl} target="_blank" rel="noreferrer">Open demo <span>↗</span></a> : <button className="soft-button" type="button" onClick={() => notify(t.noDemo)}>{t.noDemo} <span>↗</span></button>}</div>}{detailTab === 'questions' && <div className="detail-panel"><div className="question-list">{selectedQuestions.length === 0 ? <p className="empty-detail">{t.noQuestions}</p> : selectedQuestions.map((item) => <div className="question-item" key={item.id}><span className="question-avatar">{item.initials}</span><div className="question-copy"><div className="question-meta"><b>{item.author}</b><small>{item.role} · {item.time}</small></div><p>{item.text}</p>{item.answer && <div className="question-answer"><span className="answer-avatar">{item.answer.initials}</span><div><div className="question-meta"><b>{item.answer.author}</b><small>{t.reply}</small></div><p>{item.answer.text}</p></div></div>}</div></div>)}</div><form className="question-form" onSubmit={postQuestion}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={t.ask} aria-label={t.ask} /><button className="primary-button" type="submit">{t.post} <span>↗</span></button></form><form className="review-form" onSubmit={postReview}><div className="review-form-heading"><b>{t.leaveFeedback}</b><span>1–5</span></div><div className="review-form-row"><select aria-label={t.averageScore} value={reviewRating} onChange={(event) => setReviewRating(event.target.value)}><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select><input value={reviewText} onChange={(event) => setReviewText(event.target.value)} placeholder={t.feedbackPlaceholder} aria-label={t.feedbackPlaceholder} /><button className="primary-button" type="submit">{t.saveFeedback} <span>↗</span></button></div></form></div>}{detailTab === 'board' && <div className="detail-panel"><div className="board-grid"><div><span>01 / TODO</span><b>Shape the story</b><i>Problem statement</i><i>Audience notes</i></div><div><span>02 / IN PROGRESS</span><b>Build the flow</b><i>Core interaction</i><i>Responsive pass</i></div><div><span>03 / DONE</span><b>Show the work</b><i>Project concept</i><i>Visual direction</i></div></div><div className="board-review"><span className="board-review-mark">✦</span><div><b>Latest feedback</b><p>{reviews.find((item) => item.projectId === selected.id)?.text || 'The project is ready for another round of notes.'}</p></div></div></div>}</div></aside></div>}
 
-      {showAdd && <div className={`drawer-backdrop ${closingDrawer === 'add' ? 'is-closing' : ''}`} role="presentation" onClick={() => closeDrawer('add')}><form className="add-drawer" role="dialog" aria-modal="true" aria-labelledby="add-drawer-title" onSubmit={handleAdd} onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">PROJECT INTAKE / 001</span><button className="close-button" type="button" aria-label={t.close} onClick={() => closeDrawer('add')}>×</button></div><h2 id="add-drawer-title">{t.addTitle}</h2><p>{t.addBody}</p><label>{t.title}<input autoFocus name="title" required placeholder="JDU / ..." /></label><label>{t.owner}<input name="owner" required placeholder="Your name" /></label><label>{t.category}<select name="category" defaultValue="Culture + code"><option>Learning systems</option><option>Community tools</option><option>Culture + code</option></select></label><label>{t.description}<textarea name="description" required placeholder="What does this project make possible?" rows={4} /></label><label>{t.demoUrl}<input name="demoUrl" type="url" placeholder="https://..." /></label><button className="primary-button" type="submit">{t.save}<span>↗</span></button></form></div>}
+      {showAdd && <div className="drawer-backdrop" role="presentation" onClick={() => setShowAdd(false)}><form className="add-drawer" onSubmit={handleAdd} onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">PROJECT INTAKE / 001</span><button className="close-button" type="button" aria-label={t.close} onClick={() => setShowAdd(false)}>×</button></div><h2>{t.addTitle}</h2><p>{t.addBody}</p><label>{t.title}<input name="title" required placeholder="JDU / ..." /></label><label>{t.owner}<input name="owner" required placeholder="Your name" /></label><label>{t.category}<select name="category" defaultValue="Culture + code"><option>Learning systems</option><option>Community tools</option><option>Culture + code</option></select></label><label>{t.description}<textarea name="description" required placeholder="What does this project make possible?" rows={4} /></label><label>{t.demoUrl}<input name="demoUrl" type="url" placeholder="https://..." /></label><button className="primary-button" type="submit">{t.save}<span>↗</span></button></form></div>}
+      {toast && <div className="toast" role="status">{toast}<button type="button" onClick={() => setToast('')}>×</button></div>}
     </main>
   );
 }
