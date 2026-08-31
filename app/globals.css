@@ -32,8 +32,7 @@ img { display: block; }
 .topbar { position: sticky; top: 0; z-index: 40; width: min(1440px, calc(100% - 40px)); height: 80px; margin: 0 auto; display: grid; grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr); align-items: center; background: color-mix(in srgb, var(--bg) 88%, transparent); border-bottom: 1px solid rgba(202, 204, 195, 0.7); backdrop-filter: blur(18px); }
 .brand { display: inline-flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; width: fit-content; }
 .brand-mark { position: relative; width: 38px; height: 38px; display: grid; place-items: center; overflow: hidden; border-radius: 12px; background: var(--ink); color: white; font-weight: 800; letter-spacing: -0.04em; box-shadow: inset 0 -2px 0 rgba(255,255,255,.14); }
-.brand-mark b { position: relative; z-index: 1; }
-.brand-mark i { position: absolute; right: 4px; bottom: 8px; width: 22px; height: 5px; border-radius: 999px; background: linear-gradient(90deg, #8d81ff, #ff85ba); transform: rotate(-34deg); }
+.brand-symbol { width: 30px; height: 30px; display: block; }
 .brand > span:last-child { display: grid; gap: 1px; }
 .brand b { font-size: 15px; letter-spacing: -0.025em; }
 .brand small { color: var(--muted); font-size: 11px; }

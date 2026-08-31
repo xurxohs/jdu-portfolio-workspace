@@ -984,6 +984,17 @@ async function uploadMedia(file: File, kind: 'profile' | 'project', projectId?: 
   return data.url;
 }
 
+function JduLogoMark() {
+  return (
+    <svg className="brand-symbol" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M11.5 8.5V21.8C11.5 26.1 13.9 28.8 18.1 28.8C22.9 28.8 26.2 25.9 26.2 21.1V8.5" stroke="#F7F7F1" strokeWidth="3.1" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9.5 29.5L16.8 22.2" stroke="#8D81FF" strokeWidth="2.8" strokeLinecap="round" />
+      <path d="M23.1 15.2L28.4 9.9" stroke="#FF85BA" strokeWidth="2.8" strokeLinecap="round" />
+      <circle cx="28.4" cy="9.9" r="2.2" fill="#FF85BA" />
+    </svg>
+  );
+}
+
 function ProjectVisual({ project, large = false }: { project: Project; large?: boolean }) {
   const fallbackCover = projectCoverFallbacks[project.id];
   const requestedCover = project.coverUrl || fallbackCover;
@@ -1522,7 +1533,7 @@ export default function Home() {
     <main className={`portfolio-site ${sidebarOpen ? 'is-nav-open' : ''}`} id="top">
       <header className="topbar">
         <a className="brand" href="#top" aria-label="JDU Portfolio home">
-          <span className="brand-mark" aria-hidden="true"><b>J</b><i /></span>
+          <span className="brand-mark"><JduLogoMark /></span>
           <span><b>JDU Portfolio</b><small>{c.brandLine}</small></span>
         </a>
         <nav className="desktop-nav" aria-label="Main navigation">
@@ -1626,7 +1637,7 @@ export default function Home() {
         <div className="feedback-grid">{reviews.slice(0, 3).map((item) => <button className="feedback-card" type="button" key={item.id} onClick={() => { const project = projects.find((candidate) => candidate.id === item.projectId); if (project) { selectProject(project); setDetailTab('questions'); } }}><span className="demo-label">DEMO</span><div className="feedback-card-top"><span className="feedback-avatar">{item.initials}</span><span className="feedback-meta"><b>{item.author}</b><small>{item.role}</small></span><span className="feedback-stars">{'★'.repeat(item.rating)}<i>{'★'.repeat(5 - item.rating)}</i></span></div><p>“{item.text}”</p><span className="feedback-project">{item.project}<span>↗</span></span></button>)}</div>
       </section>
 
-      <footer className="site-footer"><a className="brand" href="#top"><span className="brand-mark" aria-hidden="true"><b>J</b><i /></span><span><b>JDU Portfolio</b><small>{c.footer}</small></span></a><div><button type="button" onClick={() => navigate('projects')}>{c.navExplore}</button><button type="button" onClick={() => navigate('categories')}>{c.navCategories}</button><button type="button" onClick={openProjectComposer}>{c.publish}</button></div><small>© 2026 JDU · Demo content is marked</small></footer>
+      <footer className="site-footer"><a className="brand" href="#top"><span className="brand-mark"><JduLogoMark /></span><span><b>JDU Portfolio</b><small>{c.footer}</small></span></a><div><button type="button" onClick={() => navigate('projects')}>{c.navExplore}</button><button type="button" onClick={() => navigate('categories')}>{c.navCategories}</button><button type="button" onClick={openProjectComposer}>{c.publish}</button></div><small>© 2026 JDU · Demo content is marked</small></footer>
 
       {selected && <div className="drawer-backdrop" role="presentation" onClick={() => setSelected(null)}>
         <aside className="project-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" onClick={(event) => event.stopPropagation()}>

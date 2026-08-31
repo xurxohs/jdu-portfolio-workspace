@@ -2,9 +2,10 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://jdu.95-130-227-217.nip.io'),
+  metadataBase: new URL('https://jdu-signal-archive.ishonchsavdo1.chatgpt.site'),
   title: 'JDU Portfolio — Student projects, one shared archive',
   description: 'Discover projects made at JDU, meet their creators, ask questions, and publish your own student work.',
+  icons: { icon: '/favicon.svg' },
   openGraph: {
     title: 'JDU Portfolio',
     description: 'Student projects, one shared archive.',
