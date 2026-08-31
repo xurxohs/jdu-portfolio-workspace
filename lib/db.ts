@@ -82,7 +82,18 @@ const seedProjects = [
   ['02', 'Osh Table', 'Muhammad Rakhimov', 'seed-muhammad', 'Community tools', 'Published', 'A multilingual restaurant guide built from local voices, useful maps, and stories worth sharing.', '["Reviews","Map","Local"]', 'orange', 'Yesterday', '846', '["Restaurant profiles","Community reviews","Photo + map context","Search and filters"]', ''],
   ['03', 'JDU Open Archive', 'Sardor Yusupov', 'seed-sardor', 'Culture + code', 'Published', 'A living index of student-made systems, design experiments, and the next version of Tashkent.', '["Portfolio","Archive","Multi-language"]', 'blue', '3 days ago', '2.4k', '["Project stories","External links","Questions + board","Four-language UI"]', ''],
   ['04', 'Quiet City Index', 'M. Safarova', 'seed-safarova', 'Culture + code', 'Draft', 'A calm guide to overlooked places, independent makers, and small rituals around the city.', '["Editorial","City","Research"]', 'green', 'Last week', '—', '["Editorial stories","Category search","Creator profiles"]', ''],
+  ['05', 'Signal Garden', 'JDU Demo Lab', 'demo-signal-garden', 'Creative technology', 'Published', 'A small visual playground where students turn everyday observations into interactive signals and soft experiments.', '["Interactive","Visual design","Prototype"]', 'violet', 'This week', '—', '["Interactive stories","Motion studies","Project notes","Responsive canvas"]', ''],
+  ['06', 'Atlas of Small Things', 'JDU Demo Lab', 'demo-atlas-small-things', 'Culture + code', 'Published', 'A digital atlas of ordinary places, objects, and rituals that make student life in Tashkent feel specific.', '["Editorial","Culture","Research"]', 'blue', 'This week', '—', '["Place cards","Field notes","Open archive","Multilingual labels"]', ''],
+  ['07', 'Study Relay', 'JDU Demo Lab', 'demo-study-relay', 'Learning systems', 'Draft', 'A lightweight study exchange for sharing useful explanations, examples, and the questions that remain open.', '["Education","Community","Prototype"]', 'green', 'This week', '—', '["Question threads","Saved explanations","Topic filters","Creator profiles"]', ''],
+  ['08', 'Perkly', 'Mukarramov Shoxruxbek', 'xhere-perkly', 'Web & Mobile', 'Published', 'Perkly помогает сделать условия понятными до покупки и связать каталог, продавца и мобильный клиент в один опыт.', '["Marketplace","Web + Mobile","Full-Stack"]', 'violet', '2026', '—', '["Условия до оплаты","Две стороны рынка","QR и промокоды","Общая кодовая база"]', 'https://perkly.uz'],
+  ['09', 'ISHONCH', 'Mukarramov Shoxruxbek', 'xhere-ishonch', 'Retail campaign', 'Published', 'ISHONCH превращает большой ассортимент и сложные условия рассрочки в быстрый промо-сценарий — от первого оффера до заявки в CRM.', '["Retail","Web","UZ / RU"]', 'orange', '2025', '—', '["Калькулятор рассрочки","Скорость как фича","Заявки в CRM","Две локали"]', 'https://ishonch.95-130-227-217.nip.io/'],
+  ['10', 'Ассоциация киберспорта', 'Mukarramov Shoxruxbek', 'xhere-cybersport', 'Sports portal', 'Published', 'Портал федерации связывает соревнования, игроков и зрителей в одном цифровом пространстве — от анонса события до результата матча.', '["Sports","Portal","AI"]', 'blue', '2025 — н.в.', '—', '["Киберпаспорт игрока","Сетки в реальном времени","AI-ассистент ESPI","Секция FPV-дронов"]', 'https://cybersport.95-130-227-217.nip.io'],
 ] as const;
+
+const managedProjectIds = new Set(['05', '06', '07', '08', '09', '10']);
+const legacyManualProjectIds = ['p-cd1550cd', 'p-ccd0ebff'];
+const legacyManualQuestionIds = ['q-34b2cef4'];
+const legacyManualReviewIds = ['r-b01657a4'];
 
 const seedQuestions = [
   ['q-01-01', '01', 'Nodira K.', 'NK', 'student', '2 days ago', 'How do you keep the practice prompts from feeling repetitive?', 'Akari Karimova', 'AK', 'Each scenario rotates by level and mood, so the learner practises the same skill in a new context.'],
@@ -148,7 +159,30 @@ export async function ensureDatabase() {
   if (Number(boardCountResult.results[0]?.count || 0) === 0) {
     await db.batch(seedBoardItems.map((item) => db.prepare(`INSERT INTO board_items (id, project_id, column_key, title, detail, created_at) VALUES (?, ?, ?, ?, ?, ?)`).bind(...item, now)));
   }
+  await syncManagedCatalog(db, now);
   return db;
+}
+
+async function syncManagedCatalog(db: D1Database, now: string) {
+  const cleanupStatements = [
+    ...legacyManualQuestionIds.map((id) => db.prepare('DELETE FROM questions WHERE id = ?').bind(id)),
+    ...legacyManualReviewIds.map((id) => db.prepare('DELETE FROM reviews WHERE id = ?').bind(id)),
+    ...legacyManualProjectIds.flatMap((id) => [
+      db.prepare('DELETE FROM questions WHERE project_id = ?').bind(id),
+      db.prepare('DELETE FROM reviews WHERE project_id = ?').bind(id),
+      db.prepare('DELETE FROM board_items WHERE project_id = ?').bind(id),
+      db.prepare('DELETE FROM projects WHERE id = ?').bind(id),
+    ]),
+  ];
+  await db.batch(cleanupStatements);
+
+  const existingResult = await db.prepare('SELECT id FROM projects').all<{ id: string }>();
+  const existingIds = new Set((existingResult.results || []).map((row) => String(row.id)));
+  const projectInsert = `INSERT INTO projects (id, title, owner, owner_id, category, status, description, tags_json, accent, updated, views, features_json, demo_url, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  const missingProjects = seedProjects
+    .filter((project) => managedProjectIds.has(project[0]) && !existingIds.has(project[0]))
+    .map((project) => db.prepare(projectInsert).bind(...project, now));
+  if (missingProjects.length > 0) await db.batch(missingProjects);
 }
 
 function mapProject(row: DbProject) {
