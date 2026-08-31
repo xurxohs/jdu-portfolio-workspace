@@ -5,7 +5,7 @@ import { mediaBucket, mediaKey, mediaUrl } from '@/lib/media';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
-  const user = getCurrentUser(request);
+  const user = await getCurrentUser(request);
   if (!user) return Response.json({ error: 'Sign in is required.' }, { status: 401 });
   try {
     const profile = await getProfile(user);
@@ -25,7 +25,7 @@ export async function GET(request: Request) {
 }
 
 export async function PUT(request: Request) {
-  const user = getCurrentUser(request);
+  const user = await getCurrentUser(request);
   if (!user) return Response.json({ error: 'Sign in is required.' }, { status: 401 });
   try {
     const body = await request.json() as Record<string, unknown>;

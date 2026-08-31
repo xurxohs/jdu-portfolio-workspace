@@ -73,6 +73,10 @@ const bootstrapStatements = [
   `CREATE INDEX IF NOT EXISTS idx_reviews_project_id ON reviews (project_id)`,
   `CREATE TABLE IF NOT EXISTS profiles (user_id TEXT PRIMARY KEY NOT NULL, name TEXT NOT NULL, handle TEXT NOT NULL, role TEXT NOT NULL, track TEXT NOT NULL, bio TEXT NOT NULL, updated_at TEXT NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS registrations (id TEXT PRIMARY KEY NOT NULL, channel TEXT NOT NULL, contact TEXT NOT NULL, name TEXT NOT NULL, user_id TEXT, created_at TEXT NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS auth_accounts (id TEXT PRIMARY KEY NOT NULL, channel TEXT NOT NULL, login TEXT NOT NULL, login_key TEXT NOT NULL UNIQUE, password_hash TEXT NOT NULL, password_salt TEXT NOT NULL, name TEXT NOT NULL, created_at TEXT NOT NULL)`,
+  `CREATE INDEX IF NOT EXISTS idx_auth_accounts_login_key ON auth_accounts (login_key)`,
+  `CREATE TABLE IF NOT EXISTS auth_sessions (id TEXT PRIMARY KEY NOT NULL, user_id TEXT NOT NULL, created_at TEXT NOT NULL, expires_at TEXT NOT NULL)`,
+  `CREATE INDEX IF NOT EXISTS idx_auth_sessions_user_id ON auth_sessions (user_id)`,
   `CREATE TABLE IF NOT EXISTS board_items (id TEXT PRIMARY KEY NOT NULL, project_id TEXT NOT NULL, column_key TEXT NOT NULL, title TEXT NOT NULL, detail TEXT NOT NULL, created_at TEXT NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS idx_board_items_project_id ON board_items (project_id)`,
 ];

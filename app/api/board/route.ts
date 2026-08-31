@@ -26,7 +26,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const user = getCurrentUser(request);
+  const user = await getCurrentUser(request);
   if (!user) return Response.json({ error: 'Sign in is required.' }, { status: 401 });
   try {
     const body = await request.json() as Record<string, unknown>;
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const user = getCurrentUser(request);
+  const user = await getCurrentUser(request);
   if (!user) return Response.json({ error: 'Sign in is required.' }, { status: 401 });
   try {
     const body = await request.json() as Record<string, unknown>;

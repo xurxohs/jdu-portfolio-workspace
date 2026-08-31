@@ -9,7 +9,7 @@ function isMediaKind(value: string): value is MediaKind {
 }
 
 export async function POST(request: Request) {
-  const user = getCurrentUser(request);
+  const user = await getCurrentUser(request);
   if (!user) return Response.json({ error: 'Sign in is required.' }, { status: 401 });
 
   try {

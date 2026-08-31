@@ -14,7 +14,7 @@ export async function GET(request: Request) {
 
   let subjectId = url.searchParams.get('id') || '';
   if (kind === 'profile') {
-    const user = getCurrentUser(request);
+    const user = await getCurrentUser(request);
     if (!user) return new Response(null, { status: 401 });
     subjectId = user.id;
   }

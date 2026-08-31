@@ -4,6 +4,7 @@ import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
 
 type Language = 'EN' | 'RU' | 'UZ' | 'JP';
 type RegistrationChannel = 'email' | 'telegram';
+type AuthMode = 'register' | 'login';
 type Accent = 'violet' | 'orange' | 'blue' | 'green' | 'pink';
 type View = 'overview' | 'projects' | 'categories' | 'review';
 type DetailTab = 'overview' | 'questions' | 'board';
@@ -342,17 +343,31 @@ const ui: Record<Language, Record<string, string>> = {
     profileReady: 'Profile ready',
     join: 'Join JDU',
     register: 'Create account',
+    login: 'Log in',
     joinTitle: 'Create your JDU account',
+    loginTitle: 'Welcome back',
     joinBody: 'Choose a contact method, then finish your public creator profile.',
+    loginBody: 'Log in to keep publishing and managing your student projects.',
     emailTab: 'Email',
     telegramTab: 'Telegram',
     joinName: 'Your name',
     emailAddress: 'Email address',
     telegramUsername: 'Telegram username',
     joinSubmit: 'Continue to profile',
-    joinNote: 'Your contact stays private and is used only for your account request.',
+    registerSubmit: 'Create account',
+    loginSubmit: 'Log in',
+    password: 'Password',
+    passwordHint: 'At least 8 characters',
+    haveAccount: 'Already registered?',
+    noAccount: 'No account yet?',
+    switchToLogin: 'Log in',
+    switchToRegister: 'Create account',
+    joinNote: 'Your password is encrypted and your login stays active for 30 days on this device.',
     joinSuccess: 'Registration saved. Finish your public profile next.',
     joinError: 'Registration could not be saved. Please try again.',
+    loginSuccess: 'You are logged in.',
+    loginError: 'Login could not be completed. Check your credentials.',
+    logout: 'Log out',
     editProfile: 'Edit profile',
     profileEditBody: 'Update your creator identity before you publish the next project to the JDU archive.',
     completeProfile: 'Complete profile',
@@ -479,17 +494,31 @@ const ui: Record<Language, Record<string, string>> = {
     profileReady: 'Профиль готов',
     join: 'Регистрация',
     register: 'Регистрация',
+    login: 'Войти',
     joinTitle: 'Создай аккаунт JDU',
+    loginTitle: 'С возвращением',
     joinBody: 'Выбери способ связи, затем заполни публичный профиль автора.',
+    loginBody: 'Войди, чтобы публиковать проекты и управлять своими работами.',
     emailTab: 'Email',
     telegramTab: 'Telegram',
     joinName: 'Твоё имя',
     emailAddress: 'Email',
     telegramUsername: 'Имя пользователя в Telegram',
     joinSubmit: 'Продолжить к профилю',
-    joinNote: 'Контакт скрыт и используется только для заявки на аккаунт.',
+    registerSubmit: 'Создать аккаунт',
+    loginSubmit: 'Войти',
+    password: 'Пароль',
+    passwordHint: 'Не менее 8 символов',
+    haveAccount: 'Уже зарегистрирован?',
+    noAccount: 'Ещё нет аккаунта?',
+    switchToLogin: 'Войти',
+    switchToRegister: 'Создать аккаунт',
+    joinNote: 'Пароль хранится в зашифрованном виде, а вход сохраняется на этом устройстве на 30 дней.',
     joinSuccess: 'Регистрация сохранена. Теперь заполни публичный профиль.',
     joinError: 'Не удалось сохранить регистрацию. Попробуй ещё раз.',
+    loginSuccess: 'Вход выполнен.',
+    loginError: 'Не удалось войти. Проверь логин и пароль.',
+    logout: 'Выйти',
     editProfile: 'Изменить профиль',
     profileEditBody: 'Обнови данные автора перед публикацией следующего проекта в архиве JDU.',
     completeProfile: 'Заполнить профиль',
@@ -616,17 +645,31 @@ const ui: Record<Language, Record<string, string>> = {
     profileReady: 'Profil tayyor',
     join: 'Ro‘yxatdan o‘tish',
     register: 'Ro‘yxatdan o‘tish',
+    login: 'Kirish',
     joinTitle: 'JDU akkauntini yarating',
+    loginTitle: 'Xush kelibsiz',
     joinBody: 'Aloqa usulini tanlang, keyin ochiq muallif profilini to‘ldiring.',
+    loginBody: 'Loyihalarni joylash va boshqarish uchun akkauntingizga kiring.',
     emailTab: 'Email',
     telegramTab: 'Telegram',
     joinName: 'Ismingiz',
     emailAddress: 'Email manzil',
     telegramUsername: 'Telegram foydalanuvchi nomi',
     joinSubmit: 'Profilga davom etish',
-    joinNote: 'Kontakt yashirin qoladi va faqat akkaunt so‘rovi uchun ishlatiladi.',
+    registerSubmit: 'Akkaunt yaratish',
+    loginSubmit: 'Kirish',
+    password: 'Parol',
+    passwordHint: 'Kamida 8 ta belgi',
+    haveAccount: 'Allaqachon ro‘yxatdan o‘tganmisiz?',
+    noAccount: 'Hali akkauntingiz yo‘qmi?',
+    switchToLogin: 'Kirish',
+    switchToRegister: 'Akkaunt yaratish',
+    joinNote: 'Parol himoyalangan holda saqlanadi, kirish esa ushbu qurilmada 30 kun davomida saqlanadi.',
     joinSuccess: 'Ro‘yxatdan o‘tish saqlandi. Endi ochiq profilingizni to‘ldiring.',
     joinError: 'Ro‘yxatdan o‘tishni saqlab bo‘lmadi. Qayta urinib ko‘ring.',
+    loginSuccess: 'Tizimga kirdingiz.',
+    loginError: 'Kirish amalga oshmadi. Login va parolni tekshiring.',
+    logout: 'Chiqish',
     editProfile: 'Profilni tahrirlash',
     profileEditBody: 'JDU arxiviga keyingi loyihani joylashdan oldin ijodkor maʼlumotlarini yangilang.',
     completeProfile: 'Profilni to‘ldirish',
@@ -753,17 +796,31 @@ const ui: Record<Language, Record<string, string>> = {
     profileReady: 'プロフィール準備完了',
     join: '参加する',
     register: 'アカウント登録',
+    login: 'ログイン',
     joinTitle: 'JDUアカウントを作成',
+    loginTitle: 'おかえりなさい',
     joinBody: '連絡方法を選び、公開プロフィールを完成させましょう。',
+    loginBody: 'ログインすると、作品の公開と管理を続けられます。',
     emailTab: 'Email',
     telegramTab: 'Telegram',
     joinName: '名前',
     emailAddress: 'メールアドレス',
     telegramUsername: 'Telegramユーザー名',
     joinSubmit: 'プロフィールへ進む',
-    joinNote: '連絡先は非公開で、アカウント申請にのみ使用されます。',
+    registerSubmit: 'アカウントを作成',
+    loginSubmit: 'ログイン',
+    password: 'パスワード',
+    passwordHint: '8文字以上',
+    haveAccount: '登録済みですか？',
+    noAccount: 'アカウントをお持ちでないですか？',
+    switchToLogin: 'ログイン',
+    switchToRegister: 'アカウントを作成',
+    joinNote: 'パスワードは保護され、この端末では30日間ログイン状態が維持されます。',
     joinSuccess: '登録を保存しました。次に公開プロフィールを完成してください。',
     joinError: '登録を保存できませんでした。もう一度お試しください。',
+    loginSuccess: 'ログインしました。',
+    loginError: 'ログインできませんでした。ログイン情報を確認してください。',
+    logout: 'ログアウト',
     editProfile: 'プロフィールを編集',
     profileEditBody: '次の作品をJDUアーカイブに公開する前に、作者情報を更新しましょう。',
     completeProfile: 'プロフィールを完成',
@@ -1025,10 +1082,13 @@ export default function Home() {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [showProfile, setShowProfile] = useState(false);
   const [showJoin, setShowJoin] = useState(false);
+  const [authMode, setAuthMode] = useState<AuthMode>('register');
   const [registrationChannel, setRegistrationChannel] = useState<RegistrationChannel>('email');
   const [registrationName, setRegistrationName] = useState('');
   const [registrationContact, setRegistrationContact] = useState('');
+  const [registrationPassword, setRegistrationPassword] = useState('');
   const [registrationBusy, setRegistrationBusy] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [profile, setProfile] = useState<Profile>(initialProfile);
   const [profileDraft, setProfileDraft] = useState<Profile>(initialProfile);
   const [profilePhotoFile, setProfilePhotoFile] = useState<File | null>(null);
@@ -1070,29 +1130,28 @@ export default function Home() {
 
   useEffect(() => {
     let active = true;
-    let cached: Partial<Profile> = {};
-    try {
-      const storedProfile = window.localStorage.getItem('jdu-profile');
-      if (storedProfile) cached = JSON.parse(storedProfile) as Partial<Profile>;
-    } catch {
-      // Ignore an old or incomplete local cache. D1 remains the source of truth.
-    }
     fetch('/api/profile', { cache: 'no-store' })
       .then((response) => {
+        if (response.status === 401) {
+          setIsAuthenticated(false);
+          setProfile(initialProfile);
+          throw new Error('Sign in is required');
+        }
         if (!response.ok) throw new Error('Profile API unavailable');
+        setIsAuthenticated(true);
         return response.json() as Promise<{ profile: (Omit<Profile, 'avatar' | 'avatarUrl'> & { avatarUrl?: string }) | null }>;
       })
       .then((data) => {
         if (!active) return;
         if (data.profile) {
           const initials = data.profile.name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toUpperCase() || 'JD';
-          setProfile({ ...data.profile, avatar: initials, avatarUrl: data.profile.avatarUrl || cached.avatarUrl });
-        } else if (cached.name) {
-          setProfile((current) => ({ ...current, ...cached }));
+          setProfile({ ...data.profile, avatar: initials, avatarUrl: data.profile.avatarUrl });
+        } else {
+          setProfile(initialProfile);
         }
       })
       .catch(() => {
-        if (active && cached.name) setProfile((current) => ({ ...current, ...cached }));
+        // Keep the seeded first paint visible when the profile service is unavailable.
       });
     return () => { active = false; };
   }, []);
@@ -1151,15 +1210,27 @@ export default function Home() {
   }
 
   function openRegistration() {
+    setAuthMode('register');
     setRegistrationChannel('email');
     setRegistrationName(profile.name !== initialProfile.name ? profile.name : '');
     setRegistrationContact('');
+    setRegistrationPassword('');
+    setShowJoin(true);
+  }
+
+  function openLogin() {
+    setAuthMode('login');
+    setRegistrationChannel('email');
+    setRegistrationName('');
+    setRegistrationContact('');
+    setRegistrationPassword('');
     setShowJoin(true);
   }
 
   function closeRegistration() {
     setShowJoin(false);
     setRegistrationBusy(false);
+    setRegistrationPassword('');
   }
 
   function openProfile(prefillName?: string) {
@@ -1170,7 +1241,7 @@ export default function Home() {
   }
 
   function openCreatorEntry() {
-    if (profileComplete) openProfile();
+    if (isAuthenticated) openProfile();
     else openRegistration();
   }
 
@@ -1237,8 +1308,12 @@ export default function Home() {
   }
 
   function openProjectComposer() {
-    if (!profileComplete) {
+    if (!isAuthenticated) {
       openRegistration();
+      return;
+    }
+    if (!profileComplete) {
+      openProfile();
       return;
     }
     setEditingProject(null);
@@ -1248,8 +1323,12 @@ export default function Home() {
   }
 
   function continueSetup() {
-    if (!profileComplete) {
+    if (!isAuthenticated) {
       openRegistration();
+      return;
+    }
+    if (!profileComplete) {
+      openProfile();
       return;
     }
     if (!projectComplete) {
@@ -1265,22 +1344,53 @@ export default function Home() {
 
   async function handleRegistration(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!registrationName.trim() || !registrationContact.trim() || registrationBusy) return;
+    if ((authMode === 'register' && !registrationName.trim()) || !registrationContact.trim() || !registrationPassword || registrationBusy) return;
     setRegistrationBusy(true);
     try {
-      const response = await fetch('/api/registrations', {
+      const response = await fetch(authMode === 'register' ? '/api/auth/register' : '/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ channel: registrationChannel, name: registrationName.trim(), contact: registrationContact.trim() }),
+        body: JSON.stringify({
+          channel: registrationChannel,
+          login: registrationContact.trim(),
+          password: registrationPassword,
+          ...(authMode === 'register' ? { name: registrationName.trim() } : {}),
+        }),
       });
-      if (!response.ok) throw new Error('Registration could not be saved');
+      if (!response.ok) throw new Error(authMode === 'register' ? 'Registration could not be saved' : 'Login could not be completed');
       const prefillName = registrationName.trim();
       closeRegistration();
-      openProfile(prefillName);
-      notify(t.joinSuccess);
+      if (authMode === 'register') {
+        setIsAuthenticated(true);
+        const nextProfile = { ...initialProfile, name: prefillName, handle: `@${prefillName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'jdu-creator'}`, avatar: prefillName.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toUpperCase() || 'JD' };
+        setProfile(nextProfile);
+        setProfileDraft(nextProfile);
+        setProfilePhotoFile(null);
+        setProfilePhotoPreview('');
+        setShowProfile(true);
+        notify(t.joinSuccess);
+      } else {
+        setIsAuthenticated(true);
+        window.localStorage.removeItem('jdu-profile');
+        notify(t.loginSuccess);
+        window.setTimeout(() => window.location.reload(), 250);
+      }
     } catch {
       setRegistrationBusy(false);
-      notify(t.joinError);
+      notify(authMode === 'register' ? t.joinError : t.loginError);
+    }
+  }
+
+  async function handleLogout() {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } finally {
+      window.localStorage.removeItem('jdu-profile');
+      setIsAuthenticated(false);
+      setProfile(initialProfile);
+      setProfileDraft(initialProfile);
+      closeProfile();
+      notify(t.logout);
     }
   }
 
@@ -1550,11 +1660,12 @@ export default function Home() {
               {(['EN', 'RU', 'UZ', 'JP'] as Language[]).map((item) => <button className={language === item ? 'is-active' : ''} key={item} type="button" role="option" aria-selected={language === item} onClick={() => { setLanguage(item); setLanguageOpen(false); }}>{item}<span>{language === item ? '✓' : ''}</span></button>)}
             </div>}
           </div>
+          {!isAuthenticated && <button className="secondary-button topbar-login" type="button" onClick={openLogin}>{t.login}</button>}
           <button className="profile-button" type="button" onClick={openCreatorEntry}>
-            <span className="profile-avatar">{profile.avatarUrl ? <img src={profile.avatarUrl} alt="" /> : profileComplete ? profile.avatar : '+'}</span>
-            <span>{profileComplete ? c.myProfile : t.join}</span>
+            <span className="profile-avatar">{profile.avatarUrl ? <img src={profile.avatarUrl} alt="" /> : isAuthenticated ? profile.avatar : '+'}</span>
+            <span>{isAuthenticated ? profileComplete ? c.myProfile : t.completeProfile : t.join}</span>
           </button>
-          {profileComplete && <button className="secondary-button topbar-register" type="button" onClick={openRegistration}>{t.register}</button>}
+          {isAuthenticated && <button className="secondary-button topbar-register" type="button" onClick={handleLogout}>{t.logout}</button>}
           <button className="primary-button topbar-publish" type="button" onClick={openProjectComposer}><span>＋</span>{c.publish}</button>
           <button className="mobile-nav-toggle" type="button" aria-label="Open navigation" aria-expanded={sidebarOpen} onClick={() => setSidebarOpen((current) => !current)}><span /><span /></button>
         </div>
@@ -1564,8 +1675,8 @@ export default function Home() {
         <button type="button" onClick={() => navigate('projects')}>{c.navExplore}</button>
         <button type="button" onClick={() => navigate('categories')}>{c.navCategories}</button>
         <button type="button" onClick={() => navigate('review')}>{c.navHow}</button>
-        <button type="button" onClick={openCreatorEntry}>{profileComplete ? c.myProfile : t.join}</button>
-        {profileComplete && <button type="button" onClick={openRegistration}>{t.register}</button>}
+        <button type="button" onClick={openCreatorEntry}>{isAuthenticated ? profileComplete ? c.myProfile : t.completeProfile : t.join}</button>
+        {isAuthenticated ? <button type="button" onClick={handleLogout}>{t.logout}</button> : <button type="button" onClick={openLogin}>{t.login}</button>}
         <button className="primary-button" type="button" onClick={openProjectComposer}>{c.publish}</button>
       </div>
 
@@ -1657,7 +1768,7 @@ export default function Home() {
 
       {showEdit && editingProject && <div className="drawer-backdrop" role="presentation" onClick={closeProjectEditor}><form className="add-drawer" role="dialog" aria-modal="true" aria-labelledby="edit-drawer-title" onSubmit={handleEdit} onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">EDIT / {editingProject.id}</span><button className="close-button" type="button" aria-label={t.close} onClick={closeProjectEditor}>×</button></div><h2 id="edit-drawer-title">{t.edit}</h2><p>{t.editBody}</p><label>{t.title}<input name="title" required defaultValue={editingProject.title} /></label><label>{t.owner}<input name="owner" required defaultValue={editingProject.owner} /></label><label>{t.category}<select name="category" defaultValue={editingProject.category}><option>Learning systems</option><option>Community tools</option><option>Culture + code</option></select></label><label>{t.description}<textarea name="description" required defaultValue={editingProject.description} rows={4} /></label><label>{t.demoUrl}<input name="demoUrl" type="url" defaultValue={editingProject.demoUrl} placeholder="https://..." /></label><label>{t.projectStatus}<select name="status" defaultValue={editingProject.status}><option value="Draft">{t.statusDraft}</option><option value="Published">{t.statusPublished}</option></select></label><label className="media-picker"><span className={`media-picker-preview ${projectCoverPreview ? 'has-image' : ''}`}>{projectCoverPreview ? <img src={projectCoverPreview} alt="" /> : <span className="media-picker-plus">＋</span>}</span><span className="media-picker-copy"><b>{t.coverImage}</b><small>{projectCoverFile?.name || t.coverHint}</small></span><span className="media-picker-arrow">↗</span><input name="cover" type="file" accept="image/avif,image/gif,image/jpeg,image/png,image/webp" onChange={handleProjectCoverChange} /></label><button className="primary-button" type="submit">{t.save}<span>↗</span></button></form></div>}
 
-      {showJoin && <div className="drawer-backdrop" role="presentation" onClick={closeRegistration}><form className="join-drawer" role="dialog" aria-modal="true" aria-labelledby="join-drawer-title" onSubmit={handleRegistration} onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">JOIN JDU</span><button className="close-button" type="button" aria-label={t.close} onClick={closeRegistration}>×</button></div><div className="join-heading"><span className="join-mark" aria-hidden="true"><b>J</b><i /></span><div><h2 id="join-drawer-title">{t.joinTitle}</h2><p>{t.joinBody}</p></div></div><div className="join-methods" role="tablist" aria-label={t.join}><button className={registrationChannel === 'email' ? 'is-active' : ''} type="button" role="tab" aria-selected={registrationChannel === 'email'} onClick={() => { setRegistrationChannel('email'); setRegistrationContact(''); }}><span>✉</span>{t.emailTab}</button><button className={registrationChannel === 'telegram' ? 'is-active' : ''} type="button" role="tab" aria-selected={registrationChannel === 'telegram'} onClick={() => { setRegistrationChannel('telegram'); setRegistrationContact(''); }}><span>◉</span>{t.telegramTab}</button></div><div className="join-form"><label>{t.joinName}<input value={registrationName} onChange={(event) => setRegistrationName(event.target.value)} required autoComplete="name" /></label><label>{registrationChannel === 'email' ? t.emailAddress : t.telegramUsername}<input value={registrationContact} onChange={(event) => setRegistrationContact(event.target.value)} required type={registrationChannel === 'email' ? 'email' : 'text'} inputMode={registrationChannel === 'email' ? 'email' : 'text'} placeholder={registrationChannel === 'email' ? 'name@example.com' : '@username'} autoComplete={registrationChannel === 'email' ? 'email' : 'username'} /></label></div><p className="join-note"><span>i</span>{t.joinNote}</p><button className="primary-button join-submit" type="submit" disabled={registrationBusy}>{registrationBusy ? '...' : t.joinSubmit}<span>↗</span></button></form></div>}
+      {showJoin && <div className="drawer-backdrop" role="presentation" onClick={closeRegistration}><form className="join-drawer" role="dialog" aria-modal="true" aria-labelledby="join-drawer-title" onSubmit={handleRegistration} onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">{authMode === 'login' ? 'LOG IN' : 'JOIN JDU'}</span><button className="close-button" type="button" aria-label={t.close} onClick={closeRegistration}>×</button></div><div className="join-heading"><span className="join-mark" aria-hidden="true"><JduLogoMark /></span><div><h2 id="join-drawer-title">{authMode === 'login' ? t.loginTitle : t.joinTitle}</h2><p>{authMode === 'login' ? t.loginBody : t.joinBody}</p></div></div><div className="join-methods" role="tablist" aria-label={t.join}><button className={registrationChannel === 'email' ? 'is-active' : ''} type="button" role="tab" aria-selected={registrationChannel === 'email'} onClick={() => { setRegistrationChannel('email'); setRegistrationContact(''); }}><span>✉</span>{t.emailTab}</button><button className={registrationChannel === 'telegram' ? 'is-active' : ''} type="button" role="tab" aria-selected={registrationChannel === 'telegram'} onClick={() => { setRegistrationChannel('telegram'); setRegistrationContact(''); }}><span>◉</span>{t.telegramTab}</button></div><div className="auth-switch"><span>{authMode === 'login' ? t.noAccount : t.haveAccount}</span><button type="button" onClick={() => { setAuthMode(authMode === 'login' ? 'register' : 'login'); setRegistrationName(''); setRegistrationContact(''); setRegistrationPassword(''); }}>{authMode === 'login' ? t.switchToRegister : t.switchToLogin}</button></div><div className="join-form">{authMode === 'register' && <label>{t.joinName}<input value={registrationName} onChange={(event) => setRegistrationName(event.target.value)} required autoComplete="name" /></label>}<label>{registrationChannel === 'email' ? t.emailAddress : t.telegramUsername}<input value={registrationContact} onChange={(event) => setRegistrationContact(event.target.value)} required type={registrationChannel === 'email' ? 'email' : 'text'} inputMode={registrationChannel === 'email' ? 'email' : 'text'} placeholder={registrationChannel === 'email' ? 'name@example.com' : '@username'} autoComplete={registrationChannel === 'email' ? 'email' : 'username'} /></label><label>{t.password}<input value={registrationPassword} onChange={(event) => setRegistrationPassword(event.target.value)} required type="password" minLength={8} maxLength={128} placeholder={t.passwordHint} autoComplete={authMode === 'login' ? 'current-password' : 'new-password'} /></label></div><p className="join-note"><span>i</span>{t.joinNote}</p><button className="primary-button join-submit" type="submit" disabled={registrationBusy}>{registrationBusy ? '...' : authMode === 'login' ? t.loginSubmit : t.registerSubmit}<span>↗</span></button></form></div>}
 
       {showProfile && <div className="drawer-backdrop" role="presentation" onClick={closeProfile}><form className="profile-drawer" role="dialog" aria-modal="true" aria-labelledby="profile-drawer-title" onSubmit={handleProfileSave} onClick={(event) => event.stopPropagation()}><div className="drawer-top"><span className="eyebrow">CREATOR PROFILE</span><button className="close-button" type="button" aria-label={t.close} onClick={closeProfile}>×</button></div><div className="profile-heading"><div><h2 id="profile-drawer-title">{profileComplete ? t.editProfile : t.profileTitle}</h2><p>{profileComplete ? t.profileEditBody : t.profileBody}</p></div><span className="profile-status"><i />{profileComplete ? t.profileReady : t.createProfile}</span></div><div className="profile-photo-section"><label className="profile-avatar-picker"><span className="profile-avatar-image">{profilePhotoPreview || profileDraft.avatarUrl ? <img src={profilePhotoPreview || profileDraft.avatarUrl} alt="" /> : profileDraft.avatar}</span><span className="profile-avatar-overlay"><b>＋</b><small>{t.choosePhoto}</small></span><input className="visually-hidden" name="avatar" type="file" accept="image/avif,image/gif,image/jpeg,image/png,image/webp" onChange={handleProfilePhotoChange} /></label><div className="profile-photo-copy"><b>{t.avatarPhoto}</b><span>{profilePhotoFile?.name || t.photoHint}</span><small>{profileDraft.handle}</small></div></div><div className="profile-form-grid"><label>{t.profileName}<input name="name" required defaultValue={profileDraft.name} placeholder="Your name" /></label><label>{t.profileRole}<input name="role" required defaultValue={profileDraft.role} placeholder="Student creator" /></label><label className="profile-field-wide">{t.profileTrack}<select name="track" required defaultValue={profileDraft.track}><option value="" disabled>Select a track</option><option>Learning systems</option><option>Community tools</option><option>Culture + code</option></select></label><label className="profile-field-wide">{t.profileBio}<textarea name="bio" required defaultValue={profileDraft.bio} placeholder="What do you make, research, or care about?" rows={4} /></label></div><div className="drawer-actions profile-actions"><button className="primary-button" type="submit">{t.saveProfile}<span>↗</span></button><button className="secondary-button" type="button" onClick={closeProfile}>{t.maybeLater}</button></div></form></div>}
 

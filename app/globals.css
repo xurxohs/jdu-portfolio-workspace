@@ -329,10 +329,14 @@ button:hover .project-cover-image { transform: scale(1.025); }
 .join-methods button.is-active { background: white; color: var(--ink); box-shadow: 0 2px 8px rgba(20,21,18,.08); }
 .join-methods button:active { transform: scale(.97); }
 .join-methods button span { color: var(--accent); font-size: 14px; }
+.join-mark .brand-symbol { width: 34px; height: 34px; }
 .join-form { display: grid; gap: 14px; margin-top: 24px; }
 .join-form label { display: grid; gap: 7px; color: #4f524d; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
 .join-form input { width: 100%; height: 50px; border: 1px solid var(--line); border-radius: 13px; outline: 0; background: #fafaf7; padding: 0 14px; color: var(--ink); font-size: 13px; text-transform: none; letter-spacing: 0; transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease; }
 .join-form input:focus { border-color: var(--accent); background: white; box-shadow: 0 0 0 3px rgba(102,86,232,.1); }
+.auth-switch { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; color: var(--muted); font-size: 11px; }
+.auth-switch button { border: 0; background: transparent; padding: 0; color: var(--accent-strong); cursor: pointer; font-size: 11px; font-weight: 800; }
+.auth-switch button:hover { color: var(--ink); }
 .join-note { display: flex; gap: 8px; margin: 18px 0 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
 .join-note > span { width: 16px; height: 16px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 50%; background: var(--accent-soft); color: var(--accent-strong); font-size: 10px; font-weight: 800; }
 .join-submit { width: 100%; margin-top: 20px; }
