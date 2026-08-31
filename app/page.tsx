@@ -341,6 +341,7 @@ const ui: Record<Language, Record<string, string>> = {
     createProfile: 'Create profile',
     profileReady: 'Profile ready',
     join: 'Join JDU',
+    register: 'Create account',
     joinTitle: 'Create your JDU account',
     joinBody: 'Choose a contact method, then finish your public creator profile.',
     emailTab: 'Email',
@@ -477,6 +478,7 @@ const ui: Record<Language, Record<string, string>> = {
     createProfile: 'Создать профиль',
     profileReady: 'Профиль готов',
     join: 'Регистрация',
+    register: 'Регистрация',
     joinTitle: 'Создай аккаунт JDU',
     joinBody: 'Выбери способ связи, затем заполни публичный профиль автора.',
     emailTab: 'Email',
@@ -613,6 +615,7 @@ const ui: Record<Language, Record<string, string>> = {
     createProfile: 'Profil yaratish',
     profileReady: 'Profil tayyor',
     join: 'Ro‘yxatdan o‘tish',
+    register: 'Ro‘yxatdan o‘tish',
     joinTitle: 'JDU akkauntini yarating',
     joinBody: 'Aloqa usulini tanlang, keyin ochiq muallif profilini to‘ldiring.',
     emailTab: 'Email',
@@ -749,6 +752,7 @@ const ui: Record<Language, Record<string, string>> = {
     createProfile: 'プロフィールを作成',
     profileReady: 'プロフィール準備完了',
     join: '参加する',
+    register: 'アカウント登録',
     joinTitle: 'JDUアカウントを作成',
     joinBody: '連絡方法を選び、公開プロフィールを完成させましょう。',
     emailTab: 'Email',
@@ -1539,6 +1543,7 @@ export default function Home() {
             <span className="profile-avatar">{profile.avatarUrl ? <img src={profile.avatarUrl} alt="" /> : profileComplete ? profile.avatar : '+'}</span>
             <span>{profileComplete ? c.myProfile : t.join}</span>
           </button>
+          {profileComplete && <button className="secondary-button topbar-register" type="button" onClick={openRegistration}>{t.register}</button>}
           <button className="primary-button topbar-publish" type="button" onClick={openProjectComposer}><span>＋</span>{c.publish}</button>
           <button className="mobile-nav-toggle" type="button" aria-label="Open navigation" aria-expanded={sidebarOpen} onClick={() => setSidebarOpen((current) => !current)}><span /><span /></button>
         </div>
