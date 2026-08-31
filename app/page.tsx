@@ -1218,15 +1218,6 @@ export default function Home() {
     setShowJoin(true);
   }
 
-  function openLogin() {
-    setAuthMode('login');
-    setRegistrationChannel('email');
-    setRegistrationName('');
-    setRegistrationContact('');
-    setRegistrationPassword('');
-    setShowJoin(true);
-  }
-
   function closeRegistration() {
     setShowJoin(false);
     setRegistrationBusy(false);
@@ -1660,7 +1651,6 @@ export default function Home() {
               {(['EN', 'RU', 'UZ', 'JP'] as Language[]).map((item) => <button className={language === item ? 'is-active' : ''} key={item} type="button" role="option" aria-selected={language === item} onClick={() => { setLanguage(item); setLanguageOpen(false); }}>{item}<span>{language === item ? '✓' : ''}</span></button>)}
             </div>}
           </div>
-          {!isAuthenticated && <button className="secondary-button topbar-login" type="button" onClick={openLogin}>{t.login}</button>}
           <button className="profile-button" type="button" onClick={openCreatorEntry}>
             <span className="profile-avatar">{profile.avatarUrl ? <img src={profile.avatarUrl} alt="" /> : isAuthenticated ? profile.avatar : '+'}</span>
             <span>{isAuthenticated ? profileComplete ? c.myProfile : t.completeProfile : t.join}</span>
@@ -1676,7 +1666,7 @@ export default function Home() {
         <button type="button" onClick={() => navigate('categories')}>{c.navCategories}</button>
         <button type="button" onClick={() => navigate('review')}>{c.navHow}</button>
         <button type="button" onClick={openCreatorEntry}>{isAuthenticated ? profileComplete ? c.myProfile : t.completeProfile : t.join}</button>
-        {isAuthenticated ? <button type="button" onClick={handleLogout}>{t.logout}</button> : <button type="button" onClick={openLogin}>{t.login}</button>}
+        {isAuthenticated && <button type="button" onClick={handleLogout}>{t.logout}</button>}
         <button className="primary-button" type="button" onClick={openProjectComposer}>{c.publish}</button>
       </div>
 
