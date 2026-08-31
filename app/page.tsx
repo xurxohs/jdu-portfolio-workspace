@@ -1465,7 +1465,7 @@ export default function Home() {
       <section className="portfolio-hero" id="overview">
         <div className="hero-copy">
           <p className="section-kicker"><span />{c.heroKicker}</p>
-          <h1>{c.heroTitle}</h1>
+          <h1>{language === 'EN' ? <><span className="hero-word hero-word--great" tabIndex={0}>Great</span>{c.heroTitle.slice('Great'.length)}</> : c.heroTitle}</h1>
           <p className="hero-body">{c.heroBody}</p>
           <div className="hero-actions">
             <button className="primary-button" type="button" onClick={() => navigate('projects')}>{c.heroPrimary}<span>↓</span></button>

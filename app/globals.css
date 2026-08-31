@@ -83,6 +83,13 @@ img { display: block; }
 .section-kicker { display: flex; align-items: center; gap: 9px; }
 .section-kicker > span { width: 22px; height: 2px; border-radius: 999px; background: var(--accent); }
 .hero-copy h1 { max-width: 790px; margin: 0; font-size: clamp(48px, 5.9vw, 88px); line-height: .96; letter-spacing: -.066em; font-weight: 760; }
+.hero-word { display: inline-block; transform-origin: left center; }
+.hero-word--great { cursor: default; transition: transform 180ms var(--ease-out), color 180ms ease, filter 180ms ease; }
+.hero-word--great:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; border-radius: 7px; }
+@media (hover: hover) and (pointer: fine) {
+  .hero-word--great:hover { color: transparent; background: linear-gradient(105deg, var(--ink) 8%, var(--ink) 36%, #6d5be8 52%, #f08bb8 66%, var(--ink) 88%); background-size: 240% 100%; -webkit-background-clip: text; background-clip: text; transform: scale(1.065); filter: drop-shadow(0 8px 14px rgba(102,86,232,.14)); animation: hero-word-shimmer 900ms var(--ease-in-out) both; }
+}
+.hero-word--great:focus-visible, .hero-word--great:active { color: transparent; background: linear-gradient(105deg, var(--ink) 8%, var(--ink) 36%, #6d5be8 52%, #f08bb8 66%, var(--ink) 88%); background-size: 240% 100%; -webkit-background-clip: text; background-clip: text; transform: scale(1.04); animation: hero-word-shimmer 900ms var(--ease-in-out) both; }
 .hero-body { max-width: 620px; margin: 28px 0 0; color: #565a54; font-size: clamp(16px, 1.35vw, 20px); line-height: 1.58; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 34px; }
 .hero-metrics { display: flex; gap: 38px; margin-top: 54px; }
@@ -371,6 +378,7 @@ button:hover .project-cover-image { transform: scale(1.025); }
 
 @keyframes drawer-in { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes popover-in { from { opacity: 0; transform: scale(.96) translateY(-4px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes hero-word-shimmer { from { background-position: 100% 50%; } to { background-position: 0% 50%; } }
 @keyframes backdrop-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes toast-in { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
