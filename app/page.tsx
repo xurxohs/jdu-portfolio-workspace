@@ -1554,6 +1554,7 @@ export default function Home() {
         <button type="button" onClick={() => navigate('categories')}>{c.navCategories}</button>
         <button type="button" onClick={() => navigate('review')}>{c.navHow}</button>
         <button type="button" onClick={openCreatorEntry}>{profileComplete ? c.myProfile : t.join}</button>
+        {profileComplete && <button type="button" onClick={openRegistration}>{t.register}</button>}
         <button className="primary-button" type="button" onClick={openProjectComposer}>{c.publish}</button>
       </div>
 
